@@ -15,5 +15,7 @@ Voor eventuele lastige of zware scripts worden helpers gebruikt in de map helper
 ## Pagina's
 
 index.html > landingpage
+
 routes.html > selectiepagina voor de route
+
 route.html > pagina voor de route zelf
