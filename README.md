@@ -4,7 +4,10 @@ Propedeuseproject Groninger Museum B02
 ## Projectstructuur
 
 ### /frontend
-Frontend met js en php voor templates.
+Frontend met js en php voor templates. (outdated)
+
+### /flutterapp
+Code voor de native flutter app
 
 ### /backend
 Backend in python waar calls vanuit de frontend naar gemaakt worden
