@@ -24,7 +24,7 @@ class RoutesScreen extends StatelessWidget {
               context,
               '/route',
               arguments: ScreenArguments(
-                'JA MOI',
+                'Testing',
               ),
             );
           },
