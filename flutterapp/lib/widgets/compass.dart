@@ -6,14 +6,10 @@ import 'dart:math' as math;
 
 class Compass extends StatelessWidget {
   static const locationDirection = 0; // Direction the user should move to
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   // TODO: implement build
-  //   throw UnimplementedError();
-  // }
+  var cleanFacingDirection = 0.0;
 
   Widget build(BuildContext context) {
+
     return StreamBuilder<CompassEvent>(
       stream: FlutterCompass.events,
       builder: (context, snapshot) {
