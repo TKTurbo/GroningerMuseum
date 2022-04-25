@@ -1,1 +1,1 @@
-<img src="images/logos/Organisatiegroningermuseum.svg">
+<img src="{{ asset('images/logos/Organisatiegroningermuseum.svg') }}">
