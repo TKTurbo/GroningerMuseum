@@ -24,6 +24,13 @@ Route::get('/dashboard', function () {
 
 Route::get('/themes', ['as' => 'themes.main', 'uses' => 'App\Http\Controllers\ThemeController@show_main']);
 
-route::get('/routes', ['as' => 'routes.main', 'uses' => 'App\Http\Controllers\RouteController@show_main']);
+Route::group(['prefix'=>'routes','as'=>'routes.'], function(){
+
+    Route::get('/', ['as' => 'main', 'uses' => 'App\Http\Controllers\RouteController@show_main']);
+    Route::get('/create', ['as' => 'create', 'uses' => 'App\Http\Controllers\RouteController@showCreate']);
+    Route::post('/create', ['as' => 'store', 'uses' => 'App\Http\Controllers\RouteController@store']);
+    Route::delete('{route_id}/delete', ['as' => 'delete', 'uses' => 'App\Http\Controllers\RouteController@delete']);
+
+});
 
 require __DIR__.'/auth.php';
