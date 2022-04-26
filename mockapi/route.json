@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "route_name": "Voorbeeld",
+    "version": "1.0"
+  },
+  "path": [
+    {
+      "name": "Kunstwerk",
+      "to_next": "N"
+    },
+    {
+      "name": "Gang 1",
+      "to_next": "20"
+    },
+    {
+      "name": "Gang 2",
+      "to_next": "90"
+    },
+    {
+      "name": "Beeld",
+      "to_next": "0"
+    },
+    {
+      "name": "Gang 3",
+      "to_next": "270"
+    },
+    {
+      "name": "Expositie",
+      "to_next": null
+    }
+  ]
+}
