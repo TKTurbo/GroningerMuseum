@@ -17,8 +17,11 @@ class RoutesScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('GMS - Routeselectie'),
       ),
-      body: Center(
-        child: ElevatedButton(
+      body: Wrap(
+
+        children: [
+          for (int i=0; i<10; i++)
+          ElevatedButton(
           onPressed: () {
             Navigator.pushNamed(
               context,
@@ -32,7 +35,9 @@ class RoutesScreen extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             minimumSize: Size(200, 100),
           ),
-        ),
+        )
+
+        ]
       ),
     );
   }
