@@ -16,7 +16,7 @@
 
                    <hr>
 
-                    <a href="#" class="uk-button uk-button-secondary">Route aanpassen</a>
+                    <a href="{{ route('routes.show.update', [$route_id = $selected_route->id]) }}" class="uk-button uk-button-secondary">Route aanpassen</a>
 
                 </div>
             </div>

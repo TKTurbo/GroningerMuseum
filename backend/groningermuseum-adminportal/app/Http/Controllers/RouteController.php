@@ -29,15 +29,33 @@ class RouteController extends Controller
         $attr = [
             'header' => "Nieuwe route aanmaken",
             'button' => "Nieuwe route opslaan",
-            'themes' => Theme::all()
+            'themes' => Theme::all(),
+            'method' => 'POST',
+            'form-route' => 'routes.store'
         ];
 
         return view('routes.form', compact('attr'));
     }
 
+    public function showUpdateForm($route_id)
+    {
+        $route = Route::find($route_id);
+
+        $attr = [
+            'header' => $route->name,
+            'button' => 'Route updaten en opslaan',
+            'themes' => Theme::all(),
+            'method' => 'PUT',
+            'form-route' => 'routes.update'
+        ];
+
+        return view ('routes.form', compact('route', 'attr'));
+    }
+
 
     public function showDetails($route_id)
     {
+        // detail view
         $selected_route = Route::find($route_id);
 
         $attr = [
@@ -55,6 +73,22 @@ class RouteController extends Controller
         $processor->store();
 
         return redirect(route('routes.main'));
+    }
+
+    public function update(Request $request, $route_id)
+    {
+        // update...
+        $route = Route::find($route_id);
+        $processor = New RouteProcessor($request->all(), $route);
+        $processor->update();
+
+        $attr = [
+            'header' => $route->name,
+        ];
+
+        return redirect(route('routes.details', [$route_id = $route->id]));
+
+
     }
 
     public function delete(Request $request, $route_id)

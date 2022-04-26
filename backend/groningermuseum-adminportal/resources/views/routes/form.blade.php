@@ -10,7 +10,10 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                    
-                    <form method="POST" action="{{ route('routes.store') }}">
+                    <form method="POST" 
+                          action="{{ $attr['form-route'] == 'routes.update'
+                          ? route('routes.update', [$route_id = $route->id])
+                          : route($attr['form-route']) }}">
                         @csrf
                         <fieldset class="uk-fieldset">
 

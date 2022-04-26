@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('themes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('route_id');
             $table->string('name');
             $table->mediumText('description');
             $table->timestamps();

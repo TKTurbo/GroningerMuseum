@@ -25,6 +25,15 @@ class RouteProcessor
 		$this->route->save();
 	}
 
+	public function update()
+	{
+		// update the values from the route
+		$this->route->theme_id = $this->request['theme'];
+		$this->route->user_id = Auth()->user()->id;
+		$this->route->name = $this->request['name'];
+		$this->route->update();
+	}
+
 	public function delete()
 	{
 		// delete route...

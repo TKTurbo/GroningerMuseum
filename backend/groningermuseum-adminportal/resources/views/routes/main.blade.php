@@ -8,7 +8,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12" uk-scrollspy="cls: uk-animation-slide-left; repeat: true">>
+    <div class="py-12" uk-scrollspy="cls: uk-animation-slide-left; repeat: true">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
@@ -30,7 +30,7 @@
                                     <td>{{ $route->theme->name }}</td>
                                     <td>{{ $route->user->name }}</td>
                                     <td>
-                                        <a href="" uk-icon="icon: pencil; ratio: 0.8;"></a>
+                                        <a href="{{route('routes.show.update', [$route_id = $route->id])}}" uk-icon="icon: pencil; ratio: 0.8;"></a>
                                         <a href="#" uk-icon="icon: trash; ratio: 0.8;"
                                         uk-toggle="target: #my-id"
                                         ></a>
@@ -39,8 +39,6 @@
                             @endforeach
                         </tbody>
                     </table>
-
-                    <!-- This is a button toggling the modal -->
 
                     <!-- This is the modal -->
                     <div id="my-id" uk-modal>

@@ -30,8 +30,9 @@ Route::group(['prefix'=>'routes','as'=>'routes.'], function(){
     Route::get('/create', ['as' => 'create', 'uses' => 'App\Http\Controllers\RouteController@showCreate']);
     Route::get('{route_id}/details', ['as' => 'details', 'uses' => 'App\Http\Controllers\RouteController@showDetails']);
     Route::post('/create', ['as' => 'store', 'uses' => 'App\Http\Controllers\RouteController@store']);
+    Route::get('{route_id}/update', ['as' => 'show.update', 'uses' => 'App\Http\Controllers\RouteController@showUpdateForm']);
+    Route::post('{route_id}/update', ['as' => 'update', 'uses' => 'App\Http\Controllers\RouteController@update']);
     Route::delete('{route_id}/delete', ['as' => 'delete', 'uses' => 'App\Http\Controllers\RouteController@delete']);
-
 });
 
 require __DIR__.'/auth.php';
