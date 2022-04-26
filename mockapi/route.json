@@ -3,11 +3,10 @@
     "route_name": "Voorbeeld",
     "version": "1.0"
   },
-  "path": [
-    {
-      "name": "Kunstwerk",
-      "to_next": "N"
-    },
+  "path": [{
+    "name": "Kunstwerk",
+    "to_next": "120"
+  },
     {
       "name": "Gang 1",
       "to_next": "20"
