@@ -28,6 +28,7 @@ Route::group(['prefix'=>'routes','as'=>'routes.'], function(){
 
     Route::get('/', ['as' => 'main', 'uses' => 'App\Http\Controllers\RouteController@show_main']);
     Route::get('/create', ['as' => 'create', 'uses' => 'App\Http\Controllers\RouteController@showCreate']);
+    Route::get('{route_id}/details', ['as' => 'details', 'uses' => 'App\Http\Controllers\RouteController@showDetails']);
     Route::post('/create', ['as' => 'store', 'uses' => 'App\Http\Controllers\RouteController@store']);
     Route::delete('{route_id}/delete', ['as' => 'delete', 'uses' => 'App\Http\Controllers\RouteController@delete']);
 

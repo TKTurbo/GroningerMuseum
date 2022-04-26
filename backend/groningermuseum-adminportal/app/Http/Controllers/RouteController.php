@@ -32,7 +32,19 @@ class RouteController extends Controller
             'themes' => Theme::all()
         ];
 
-        return view('routes.create', compact('attr'));
+        return view('routes.form', compact('attr'));
+    }
+
+
+    public function showDetails($route_id)
+    {
+        $selected_route = Route::find($route_id);
+
+        $attr = [
+            'header' => $selected_route->name,
+        ];
+
+        return view('routes.details', compact('selected_route', 'attr'));
     }
 
     public function store(Request $request)

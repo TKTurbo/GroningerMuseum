@@ -16,8 +16,7 @@
 
                             @include('routes.form-components.name')
                             @include('routes.form-components.theme')
-
-                        </fieldset>
+                            <hr>
 
                         <button type="submit" class="uk-button uk-button-secondary">{{ $attr['button'] }}</a>    
                     </form>

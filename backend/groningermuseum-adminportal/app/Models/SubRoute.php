@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Route extends Model
+class SubRoute extends Model
 {
     use HasFactory;
 
@@ -22,25 +22,15 @@ class Route extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'theme_id',
-        'user_id',
-        'name'
+        'route_id',
+        'name',
+        'description',
+        'order_number'
     ];
 
-
-    public function theme()
+    public function route()
     {
-        return $this->belongsTo(Theme::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function subroutes()
-    {
-        return $this->hasMany(SubRoute::class);
+        return $this->belongsTo(Route::class);
     }
 
 }
