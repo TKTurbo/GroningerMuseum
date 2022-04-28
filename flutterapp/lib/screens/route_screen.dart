@@ -9,10 +9,6 @@ import '../widgets/compass.dart';
 class RouteScreen extends StatelessWidget {
   // RouteScreen({Key? key}) : super(key: key);
 
-  void initState() {
-    print('Halloemn');
-  }
-
   static const locationDirection = 0; // Direction the user should move to
   var route;
 
@@ -21,25 +17,31 @@ class RouteScreen extends StatelessWidget {
   }
 
   RouteScreen({Key? key}) : super(key: key) {
-    print('eerst');
-    fetchRoute().then((resp) {
-      print('moi');
+    // works somehow? TODO: make cleaner when errors
+    route = fetchRoute().then((resp) {
       route = convert.jsonDecode(resp.body);
     });
-    print('moi2');
   }
 
   @override
-  Widget FutureBuilder(BuildContext context) {
-
-    print('tweed');
-    print(route);
+  Widget build(BuildContext context) {
 
     final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments; // Get screen args
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Route: ' + 'dsasddsa'),
+        // title: Text('Route: ' + 'dsasddsa'),
+        title: FutureBuilder(
+          future: route,
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            print(route);
+            if(route == null) {
+              return Text('Route aan het laden...');
+            } else {
+              return Text('Route: ' + route['meta']['route_name']);
+            }
+          },
+        )
       ),
       body: Center(
         child: Compass()
