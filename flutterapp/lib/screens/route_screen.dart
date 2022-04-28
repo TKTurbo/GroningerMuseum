@@ -7,30 +7,39 @@ import 'dart:convert' as convert;
 import '../widgets/compass.dart';
 
 class RouteScreen extends StatelessWidget {
-  RouteScreen({Key? key}) : super(key: key);
+  // RouteScreen({Key? key}) : super(key: key);
+
+  void initState() {
+    print('Halloemn');
+  }
 
   static const locationDirection = 0; // Direction the user should move to
+  var route;
 
-  Future<http.Response> fetchRoute() {
-    return http.get(Uri.parse('http://localhost:8080'));
+  Future<http.Response> fetchRoute() async {
+    return http.get(Uri.parse('http://192.168.178.64:8080/'));
+  }
+
+  RouteScreen({Key? key}) : super(key: key) {
+    print('eerst');
+    fetchRoute().then((resp) {
+      print('moi');
+      route = convert.jsonDecode(resp.body);
+    });
+    print('moi2');
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget FutureBuilder(BuildContext context) {
 
-    // var route = fetchRoute();
-    // print(route);
-
-    fetchRoute().then((resp) {
-      print('MOIII');
-      print(resp.toString());
-    });
+    print('tweed');
+    print(route);
 
     final args = ModalRoute.of(context)!.settings.arguments as ScreenArguments; // Get screen args
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Route: ' + 1.toString()),
+        title: Text('Route: ' + 'dsasddsa'),
       ),
       body: Center(
         child: Compass()
