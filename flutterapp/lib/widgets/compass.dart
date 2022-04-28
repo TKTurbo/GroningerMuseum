@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_compass/flutter_compass.dart';
-import 'package:fluttermockup/screens/routes_screen.dart';
 import 'dart:math' as math;
 
 class Compass extends StatelessWidget {
   static const locationDirection = 0; // Direction the user should move to
-  var cleanFacingDirection = 0.0;
+  var cleanFacingDirection = 0.0; // TODO: make jittery movements caused by improper sensors work
 
   Widget build(BuildContext context) {
 
@@ -17,6 +16,7 @@ class Compass extends StatelessWidget {
           return Text('Error reading heading: ${snapshot.error}');
         }
 
+        // TODO: permissions
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(),
@@ -38,7 +38,8 @@ class Compass extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           elevation: 16.0,
           child: Container(
-            padding: EdgeInsets.all(16.0),
+            margin: const EdgeInsets.only(top: 10),
+            padding: EdgeInsets.all(8.0),
             alignment: Alignment.center,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
