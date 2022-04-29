@@ -7,10 +7,7 @@ import 'dart:convert' as convert;
 import '../widgets/compass.dart';
 
 // TODO: should be stateful
-class RouteScreen extends StatelessWidget {
-  // RouteScreen({Key? key}) : super(key: key);
-
-  static const locationDirection = 0; // Direction the user should move to
+class RouteScreen extends StatefulWidget {
   var route;
   var selectedIndex = 0;
 
@@ -19,24 +16,40 @@ class RouteScreen extends StatelessWidget {
   }
 
   RouteScreen({Key? key}) : super(key: key) {
-    // works somehow? TODO: make cleaner when errors
+// works somehow? TODO: make cleaner when errors
     route = fetchRoute().then((resp) {
       route = convert.jsonDecode(resp.body);
     });
   }
 
+  @override
+  State<RouteScreen> createState() => RouteScreenState();
+}
+
+class RouteScreenState extends State<RouteScreen> {
+  static const locationDirection = 0; // Direction the user should move to
+  var selectedIndex = 0;
+  var hoi = 'moi';
+
   void onItemTapped(int index) {
     if (index == 0 && selectedIndex > 0) {
-      selectedIndex--;
-    } else if (index == 2 && selectedIndex < route['path'].length) {
-      selectedIndex++;
+      // widget.selectedIndex--;
+      // setState(() {
+      //   selectedIndex--;
+      // });
+    } else if (index == 2 && selectedIndex < widget.route['path'].length) {
+      // widget.selectedIndex++;
+      setState(() {
+        selectedIndex = 400;
+      });
     }
+    print('adssaddsadsa');
     print(selectedIndex);
   }
 
-
   @override
   Widget build(BuildContext context) {
+    selectedIndex = widget.selectedIndex;
     final args = ModalRoute.of(context)!.settings.arguments
         as ScreenArguments; // Get screen args
 
@@ -44,13 +57,16 @@ class RouteScreen extends StatelessWidget {
       appBar: AppBar(
           // title: Text('Route: ' + 'dsasddsa'),
           title: FutureBuilder(
-        future: route,
+        future: widget.route,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          print(route);
-          if (route == null) {
+          print(widget.route);
+          if (widget.route == null) {
             return Text('Route aan het laden...');
           } else {
-            return Text('Route: ' + route['meta']['route_name'] + ' | Lengte: ' + route['path'].length.toString());
+            return Text('Route: ' +
+                widget.route['meta']['route_name'] +
+                ' | Lengte: ' +
+                widget.route['path'].length.toString());
           }
         },
       )),
@@ -64,7 +80,7 @@ class RouteScreen extends StatelessWidget {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.arrow_downward),
-            label: selectedIndex.toString(),
+            label: widget.selectedIndex.toString(),
             backgroundColor: Colors.black,
           ),
           const BottomNavigationBarItem(
@@ -73,7 +89,7 @@ class RouteScreen extends StatelessWidget {
             backgroundColor: Colors.blue,
           ),
         ],
-        currentIndex: selectedIndex,
+        currentIndex: widget.selectedIndex,
         selectedItemColor: Colors.green[800],
         // TODO: dirty fix
         unselectedItemColor: Colors.green[800],
