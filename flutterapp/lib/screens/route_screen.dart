@@ -28,7 +28,7 @@ class RouteScreen extends StatelessWidget {
   void onItemTapped(int index) {
     if (index == 0 && selectedIndex > 0) {
       selectedIndex--;
-    } else if (index == 1 && selectedIndex < route['path'].length) {
+    } else if (index == 2 && selectedIndex < route['path'].length) {
       selectedIndex++;
     }
     print(selectedIndex);
@@ -56,13 +56,18 @@ class RouteScreen extends StatelessWidget {
       )),
       body: Center(child: Compass()),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+        items: <BottomNavigationBarItem>[
+          const BottomNavigationBarItem(
             icon: Icon(Icons.arrow_back),
             label: 'Vorige',
             backgroundColor: Colors.green,
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.arrow_downward),
+            label: selectedIndex.toString(),
+            backgroundColor: Colors.black,
+          ),
+          const BottomNavigationBarItem(
             icon: Icon(Icons.arrow_forward),
             label: 'Volgende',
             backgroundColor: Colors.blue,
@@ -73,6 +78,8 @@ class RouteScreen extends StatelessWidget {
         // TODO: dirty fix
         unselectedItemColor: Colors.green[800],
         onTap: onItemTapped,
+        selectedFontSize: 26,
+        unselectedFontSize: 26,
       ),
     );
   }
