@@ -37,6 +37,11 @@ class RouteProcessor
 	public function delete()
 	{
 		// delete route...
+		// if (isset($this->route->subroutes->name)) {
+		// 	foreach ($this->route->subroutes as $subroute) {
+		// 		$subroute->delete();
+		// 	};
+		// };
 		$this->route->delete();
 	}
 

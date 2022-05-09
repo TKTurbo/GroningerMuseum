@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('subroutes', function (Blueprint $table) {
+        Schema::create('sub_routes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('route_id');
             $table->string('name');

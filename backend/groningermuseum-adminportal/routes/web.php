@@ -22,8 +22,18 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
+/*
+|--------------------------------------------------------------------------
+| Theme Routes
+|--------------------------------------------------------------------------
+*/
 Route::get('/themes', ['as' => 'themes.main', 'uses' => 'App\Http\Controllers\ThemeController@show_main']);
 
+/*
+|--------------------------------------------------------------------------
+| Route Routes
+|--------------------------------------------------------------------------
+*/
 Route::group(['prefix'=>'routes','as'=>'routes.'], function(){
 
     Route::get('/', ['as' => 'main', 'uses' => 'App\Http\Controllers\RouteController@show_main']);
@@ -33,6 +43,17 @@ Route::group(['prefix'=>'routes','as'=>'routes.'], function(){
     Route::get('{route_id}/update', ['as' => 'show.update', 'uses' => 'App\Http\Controllers\RouteController@showUpdateForm']);
     Route::post('{route_id}/update', ['as' => 'update', 'uses' => 'App\Http\Controllers\RouteController@update']);
     Route::delete('{route_id}/delete', ['as' => 'delete', 'uses' => 'App\Http\Controllers\RouteController@delete']);
-});
 
+    /*
+    |--------------------------------------------------------------------------
+    | Route.subroutes Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::group(['prefix'=>'{route_id}/subroutes','as'=>'subroutes.'], function(){
+       Route::get('/create', ['as' => 'create', 'uses' => 'App\Http\Controllers\SubRouteController@create']);
+       Route::post('/create/store', ['as' => 'store', 'uses' => 'App\Http\Controllers\SubRouteController@store']);
+    });
+
+
+});
 require __DIR__.'/auth.php';
