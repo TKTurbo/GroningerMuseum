@@ -50,10 +50,36 @@
                                     <td><a href="{{ route('routes.details', [$route_id = $route->id]) }}">{{ $route->name }}</a></td>
                                     <td>{{ $route->description }}</td>
                                     <td>{{ $route->order_number }}</td>
+                                    <td>
+                                        <a href="#" uk-icon="icon: pencil; ratio: 0.8;"></a>
+                                        <a href="#" uk-icon="icon: trash; ratio: 0.8;"
+                                        uk-toggle="target: #my-id"
+                                        ></a>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+
+                    <div id="my-id" uk-modal>
+                        <div class="uk-modal-dialog uk-modal-body">
+                            <h2 class="uk-modal-title">Weet je zeker dat je deze subroute wilt verwijderen?</h2>
+                            <a href="{{ route('routes.delete', [$route_id = $selected_route->id, $subroute_id = $route->id ]) }}"
+                                class="uk-text-danger" 
+                                uk-toggle="target: #my-id"
+                                onclick="event.preventDefault();
+                                document.getElementById('delete-form-{{ $route->id }}').submit();">Ok, ik weet het zeker
+                            </a>
+                            <button class="uk-modal-close uk-margin-left" type="button">Nee, Anuleer</button>
+                        </div>
+                    </div>
+
+                    <form id="delete-form-{{ $route->id }}" action="{{ route('routes.subroutes.delete', ['route_id' => $selected_route->id, 'subroute_id' => $route->id]) }}"
+                        method="POST" style="display: none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+
 
                     <hr class="uk-divider-icon">
 

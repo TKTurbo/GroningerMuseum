@@ -24,6 +24,16 @@ class SubRouteController extends Controller
         $processor = new SubRouteProcessor($request->all(), $route_id, $subroute);
         $processor->store();
 
-        return redirect(route('routes.main'));
+        return redirect(route('routes.details', [$route_id = $route_id]));
+    }
+
+    public function delete(Request $request, $route_id, $subroute_id)
+    {
+        // Get the selected route, iniatalize a new processor and delete the selected route.
+        $subroute = Subroute::find($subroute_id);
+        $processor = New SubRouteProcessor($request->all(), $route_id, $subroute);
+        $processor->delete();
+
+        return redirect(route('routes.details', [$route_id = $route_id]));
     }
 }

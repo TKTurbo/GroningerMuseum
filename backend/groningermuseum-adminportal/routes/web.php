@@ -51,7 +51,8 @@ Route::group(['prefix'=>'routes','as'=>'routes.'], function(){
     */
     Route::group(['prefix'=>'{route_id}/subroutes','as'=>'subroutes.'], function(){
        Route::get('/create', ['as' => 'create', 'uses' => 'App\Http\Controllers\SubRouteController@create']);
-       Route::post('/create/store', ['as' => 'store', 'uses' => 'App\Http\Controllers\SubRouteController@store']);
+       Route::post('/create', ['as' => 'store', 'uses' => 'App\Http\Controllers\SubRouteController@store']);
+       Route::delete('/delete/{subroute_id}', ['as' => 'delete', 'uses' => 'App\Http\Controllers\SubRouteController@delete']);
     });
 
 
