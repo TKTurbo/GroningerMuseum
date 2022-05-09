@@ -19,7 +19,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-Route::get('routes', function() {
+Route::get('routes/get', function() {
 
     return App\Models\Route::all();
 });
@@ -29,6 +29,13 @@ Route::get('routes/{id}/get', function($id) {
     return App\Models\Route::find($id);
 
 });
+
+Route::get('routes/{id}/subroutes/get', function($id) {
+
+    return App\Models\SubRoute::where('route_id', $id)->get();
+
+});
+
 
 Route::get('themes', function() {
     
