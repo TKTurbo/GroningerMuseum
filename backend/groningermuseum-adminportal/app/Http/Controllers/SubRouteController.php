@@ -16,7 +16,9 @@ class SubRouteController extends Controller
             'button' => 'Subroute(s) opslaan...'
         ];
 
-        return view('routes.subroutes.form', compact('attr', 'route_id'));
+        $min_order = SubRoute::max('order_number');
+
+        return view('routes.subroutes.form', compact('attr','min_order', 'route_id'));
     }
 
     public function store($route_id, Request $request)

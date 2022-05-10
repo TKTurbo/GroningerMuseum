@@ -36,20 +36,20 @@
                     <table class="uk-table uk-table-divider">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Naam</th>
                                 <th>Beschrijving</th>
                                 <th>Order</th>
+                                <th></th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($subroutes as $route)
                                 <tr>
-                                    <td><span class="uk-badge">{{ $route->id }}</span></td>
-                                    <td><a href="{{ route('routes.details', [$route_id = $route->id]) }}">{{ $route->name }}</a></td>
+                                    <td><a href="#">{{ $route->name }}</a></td>
                                     <td>{{ $route->description }}</td>
                                     <td>{{ $route->order_number }}</td>
+                                    <td></td>
                                     <td>
                                         <a href="#" uk-icon="icon: pencil; ratio: 0.8;"></a>
                                         <a href="#" uk-icon="icon: trash; ratio: 0.8;"
