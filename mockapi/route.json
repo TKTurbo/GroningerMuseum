@@ -5,23 +5,23 @@
   },
   "path": [{
     "name": "Kunstwerk",
-    "to_next": "120"
+    "to_next": 120
   },
     {
       "name": "Gang 1",
-      "to_next": "20"
+      "to_next": 20
     },
     {
       "name": "Gang 2",
-      "to_next": "90"
+      "to_next": 90
     },
     {
       "name": "Beeld",
-      "to_next": "0"
+      "to_next": 0
     },
     {
       "name": "Gang 3",
-      "to_next": "270"
+      "to_next": 270
     },
     {
       "name": "Expositie",

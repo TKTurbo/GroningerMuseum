@@ -18,57 +18,30 @@ class RouteScreen extends StatefulWidget {
 class RouteScreenState extends State<RouteScreen> {
   static const locationDirection = 0; // Direction the user should move to
   int selectedIndex = 0;
-  var hoi = 'moi';
   var route;
   late Future futureRoute;
+  var backupRoute = '{"meta":{"route_name":"Mock","version":"1.0"},"path":[{"name":"Kunstwerk","to_next":120},{"name":"Gang 1","to_next":20},{"name":"Gang 2","to_next":90},{"name":"Beeld","to_next":0},{"name":"Gang 3","to_next":270},{"name":"Expositie","to_next":null}]}';
 
   @override
   void initState() {
     super.initState();
+    route = json.decode(backupRoute);
     futureRoute = fetchRoute();
   }
 
-  // RouteScreenState() {
-  //   route = fetchRoute().then((resp) {
-  //     route = convert.jsonDecode(resp.body);
-  //   });
-  //
-  //   print(32987231987321321);
-  //
-  //   print(route);
-  // }
-
   Future<http.Response> fetchRoute() async {
-    // final response = await http.get(Uri.parse('http://192.168.178.64:8080'));
-    //
-    // if (response.statusCode == 200) {
-    //   // If the server did return a 200 OK response,
-    //   // then parse the JSON.
-    //   return Route.fromJson(jsonDecode(response.body));
-    // } else {
-    //   // If the server did not return a 200 OK response,
-    //   // then throw an exception.
-    //   throw Exception('Failed to load album');
-    // }
     return http.get(Uri.parse('http://192.168.178.64:8080/'));
   }
-
-//   RouteScreen({Key? key}) : super(key: key) {
-// // works somehow? TODO: make cleaner when errors
-//     route = fetchRoute().then((resp) {
-//       route = convert.jsonDecode(resp.body);
-//     });
-//   }
 
   void onItemTapped(int index) {
     setState(() {
       if (index == 0 && selectedIndex > 0) {
         selectedIndex--;
-      } else if (index == 2 && selectedIndex < 6) {
+      } else if (index == 2 && selectedIndex < route['path'].length-1) {
         selectedIndex++;
       } else if (index == 1) {
         // TODO: explain selected index in route
-        print(selectedIndex);
+        print(route['path'][selectedIndex]);
       }
     });
   }
@@ -85,18 +58,23 @@ class RouteScreenState extends State<RouteScreen> {
         future: futureRoute,
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
-            var route = json.decode(snapshot.data.body);
+            route = json.decode(snapshot.data.body);
+            var routeLength =  route['path'].length-1;
             return Text('Route: ' +
                 route['meta']['route_name'] +
-                ' | Lengte: ' + selectedIndex.toString() + '/' + route['path'].length.toString());
+                ' | Lengte: ' + selectedIndex.toString() + '/' + routeLength.toString());
           } else if(snapshot.hasError) {
             return Text('${snapshot.error}');
           } else {
-            return Text('Route aan het laden...');
+            route = json.decode(backupRoute);
+            var routeLength =  route['path'].length-1;
+            return Text('Route: ' +
+                route['meta']['route_name'] +
+                ' | Lengte: ' + selectedIndex.toString() + '/' + routeLength.toString());
           }
         },
       )),
-      body: Center(child: Compass()),
+      body: Center(child: Compass(route['path'][selectedIndex]['to_next'])),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(
@@ -106,7 +84,7 @@ class RouteScreenState extends State<RouteScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.arrow_downward),
-            label: selectedIndex.toString(),
+            label: route['path'][selectedIndex]['name'],
             backgroundColor: Colors.black,
           ),
           const BottomNavigationBarItem(
