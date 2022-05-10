@@ -22,39 +22,44 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-/*
-|--------------------------------------------------------------------------
-| Theme Routes
-|--------------------------------------------------------------------------
-*/
-Route::get('/themes', ['as' => 'themes.main', 'uses' => 'App\Http\Controllers\ThemeController@show_main']);
-
-/*
-|--------------------------------------------------------------------------
-| Route Routes
-|--------------------------------------------------------------------------
-*/
-Route::group(['prefix'=>'routes','as'=>'routes.'], function(){
-
-    Route::get('/', ['as' => 'main', 'uses' => 'App\Http\Controllers\RouteController@show_main']);
-    Route::get('/create', ['as' => 'create', 'uses' => 'App\Http\Controllers\RouteController@showCreate']);
-    Route::get('{route_id}/details', ['as' => 'details', 'uses' => 'App\Http\Controllers\RouteController@showDetails']);
-    Route::post('/create', ['as' => 'store', 'uses' => 'App\Http\Controllers\RouteController@store']);
-    Route::get('{route_id}/update', ['as' => 'show.update', 'uses' => 'App\Http\Controllers\RouteController@showUpdateForm']);
-    Route::post('{route_id}/update', ['as' => 'update', 'uses' => 'App\Http\Controllers\RouteController@update']);
-    Route::delete('{route_id}/delete', ['as' => 'delete', 'uses' => 'App\Http\Controllers\RouteController@delete']);
+Route::group([ 'middleware' => 'auth'], function()
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Theme Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/themes', ['as' => 'themes.main', 'uses' => 'App\Http\Controllers\ThemeController@show_main']);
 
     /*
     |--------------------------------------------------------------------------
-    | Route.subroutes Routes
+    | Route Routes
     |--------------------------------------------------------------------------
     */
-    Route::group(['prefix'=>'{route_id}/subroutes','as'=>'subroutes.'], function(){
-       Route::get('/create', ['as' => 'create', 'uses' => 'App\Http\Controllers\SubRouteController@create']);
-       Route::post('/create', ['as' => 'store', 'uses' => 'App\Http\Controllers\SubRouteController@store']);
-       Route::delete('/delete/{subroute_id}', ['as' => 'delete', 'uses' => 'App\Http\Controllers\SubRouteController@delete']);
-    });
+    Route::group(['prefix'=>'routes','as'=>'routes.'], function(){
 
+        Route::get('/', ['as' => 'main', 'uses' => 'App\Http\Controllers\RouteController@show_main']);
+        Route::get('/create', ['as' => 'create', 'uses' => 'App\Http\Controllers\RouteController@showCreate']);
+        Route::get('{route_id}/details', ['as' => 'details', 'uses' => 'App\Http\Controllers\RouteController@showDetails']);
+        Route::post('/create', ['as' => 'store', 'uses' => 'App\Http\Controllers\RouteController@store']);
+        Route::get('{route_id}/update', ['as' => 'show.update', 'uses' => 'App\Http\Controllers\RouteController@showUpdateForm']);
+        Route::post('{route_id}/update', ['as' => 'update', 'uses' => 'App\Http\Controllers\RouteController@update']);
+        Route::delete('{route_id}/delete', ['as' => 'delete', 'uses' => 'App\Http\Controllers\RouteController@delete']);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Route.subroutes Routes
+        |--------------------------------------------------------------------------
+        */
+        Route::group(['prefix'=>'{route_id}/subroutes','as'=>'subroutes.'], function(){
+           Route::get('/create', ['as' => 'create', 'uses' => 'App\Http\Controllers\SubRouteController@create']);
+           Route::post('/create', ['as' => 'store', 'uses' => 'App\Http\Controllers\SubRouteController@store']);
+           Route::delete('/delete/{subroute_id}', ['as' => 'delete', 'uses' => 'App\Http\Controllers\SubRouteController@delete']);
+           Route::get('/order', ['as' => 'order', 'uses' => 'App\Http\Controllers\SubRouteController@showOrdering']);
+           Route::post('/order', ['as' => 'order.store', 'uses' => 'App\Http\Controllers\SubRouteController@updateOrdering']);
+        });
+
+    });
 
 });
 require __DIR__.'/auth.php';

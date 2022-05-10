@@ -2,6 +2,7 @@
 
 namespace App\Processors;
 
+use App\Models\Route;
 use App\Models\SubRoute;
 use Illuminate\Http\Request;
 
@@ -26,6 +27,26 @@ class SubRouteProcessor
 		$this->subroute->description = $this->request['description'];
 		$this->subroute->order_number = $this->request['quantity'];
 		$this->subroute->save();
+	}
+
+	public function updateOrdering()
+	{
+
+		$new_order = [];
+
+		foreach(explode(',',$this->request['new_order']) as $row)
+		{
+			array_push($new_order,(int)$row);
+		}
+
+		for ($i=0; $i < count($new_order); $i++) 
+		{ 
+			$subroutes[$i] = SubRoute::where('order_number', $new_order[$i])->first();
+			$subroutes[$i]->order_number = $i + 1;
+		}
+
+		foreach($subroutes as $subroute) $subroute->update();
+
 	}
 
 	public function update()

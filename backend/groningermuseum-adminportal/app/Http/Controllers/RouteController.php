@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Processors\RouteProcessor;
 use App\Models\Route;
 use App\Models\Theme;
+use App\Models\SubRoute;
 
 class RouteController extends Controller
 {
@@ -57,12 +58,13 @@ class RouteController extends Controller
     {
         // detail view
         $selected_route = Route::find($route_id);
+        $subroutes = SubRoute::where('route_id', $route_id)->orderBy('order_number')->get();
 
         $attr = [
             'header' => $selected_route->name,
         ];
 
-        return view('routes.details', compact('selected_route', 'attr'));
+        return view('routes.details', compact('selected_route','subroutes', 'attr'));
     }
 
     public function store(Request $request)

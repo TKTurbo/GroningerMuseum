@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SubRoute;
+use App\Models\Route;
 use App\Processors\SubRouteProcessor;
 
 class SubRouteController extends Controller
@@ -23,6 +24,28 @@ class SubRouteController extends Controller
         $subroute = New SubRoute;
         $processor = new SubRouteProcessor($request->all(), $route_id, $subroute);
         $processor->store();
+
+        return redirect(route('routes.details', [$route_id = $route_id]));
+    }
+
+    public function showOrdering($route_id)
+    {
+
+        $subroutes = SubRoute::where('route_id', $route_id)->orderBy('order_number')->get();
+
+        $attr = [
+            'header' => 'Het orderen van de subroutes',
+            'button' => 'Sla nieuwe ordering op'
+        ];
+
+        return view('routes.subroutes.ordering', compact('attr', 'subroutes'));
+    }
+
+    public function updateOrdering($route_id, Request $request)
+    {
+        $subroute = new SubRoute;
+        $processor = new SubRouteProcessor($request->all(), $route_id, $subroute);
+        $processor->updateOrdering();
 
         return redirect(route('routes.details', [$route_id = $route_id]));
     }

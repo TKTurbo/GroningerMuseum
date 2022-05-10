@@ -31,7 +31,7 @@
                     
                 <hr class="uk-divider-icon">
 
-                @if(isset($selected_route->subroutes))
+                @if(isset($selected_route->subroutes[0]))
 
                     <table class="uk-table uk-table-divider">
                         <thead>
@@ -44,7 +44,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($selected_route->subroutes as $route)
+                            @foreach($subroutes as $route)
                                 <tr>
                                     <td><span class="uk-badge">{{ $route->id }}</span></td>
                                     <td><a href="{{ route('routes.details', [$route_id = $route->id]) }}">{{ $route->name }}</a></td>
@@ -83,11 +83,12 @@
 
                     <hr class="uk-divider-icon">
 
-                    <a href="{{ route('routes.subroutes.create', [$route_id = $selected_route->id]) }}">Klik hier om meer subroutes aan te maken</a>
+                    <a class="uk-button uk-button-secondary" href="{{ route('routes.subroutes.create', [$route_id = $selected_route->id]) }}">Nieuwe subroutes aanmaken</a>
+                    <a class="uk-button uk-button-secondary" href="{{ route('routes.subroutes.order', [$route_id = $selected_route->id]) }}">Nieuwe subroute ordening toepassen</a>
 
                 @else
                     <p>Er zijn nog geen subroutes gevonden... <br> Om een subroute aan te maken klik hieronder op de link. Vul s.v.p. ook alvast de hoeveelheid subroutes in die gemaakt worden.</p>
-                    <a href="{{ route('routes.subroutes.create', [$route_id = $selected_route->id]) }}">Klik hier om subroutes aan te maken</a>
+                    <a class="uk-button uk-button-secondary" href="{{ route('routes.subroutes.create', [$route_id = $selected_route->id]) }}">Klik hier om subroutes aan te maken</a>
                 @endif
             </div>
         </div>
