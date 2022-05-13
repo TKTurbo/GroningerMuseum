@@ -1,19 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttermockup/screens/routes_screen.dart';
 import 'package:http/http.dart' as http;
-
-// import 'dart:convert' as convert;
-// import 'package:fluttermockup/models/Route.dart' as Route;
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-
 import '../widgets/compass.dart';
 
-// TODO: should be stateful
 class RouteScreen extends StatefulWidget {
   @override
   RouteScreenState createState() => RouteScreenState();
@@ -60,14 +53,14 @@ class RouteScreenState extends State<RouteScreen> {
         // TODO: explain selected index in route
         print(route['path'][selectedIndex]);
       }
+      compass = Compass(route['path'][selectedIndex]['to_next']);
     });
   }
 
   doVibrate() async {
     while (true) {
       await Future.delayed(Duration(milliseconds: getVibrationDelay()), () {
-        print(1);
-        Vibrate.vibrate();
+        Vibrate.feedback(FeedbackType.medium);
       });
       if (endloop) {
         break;
@@ -120,7 +113,8 @@ class RouteScreenState extends State<RouteScreen> {
                 '/' +
                 routeLength.toString());
           } else if (snapshot.hasError) {
-            return Text('${snapshot.error}');
+            print(snapshot.error);
+            return Text('Kon route niet laden!');
           } else {
             route = json.decode(backupRoute);
             var routeLength = route['path'].length - 1;
