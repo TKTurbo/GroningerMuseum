@@ -22,6 +22,7 @@ class RouteScreenState extends State<RouteScreen> {
   var compass;
   var previousVibrationDelay;
   bool endloop = false;
+  bool couldNotConnect = false;
 
   @override
   void initState() {
@@ -73,8 +74,8 @@ class RouteScreenState extends State<RouteScreen> {
     var locationAt = route['path'][selectedIndex]['to_next'];
     var pointingAt;
 
-    if (compass == null) {
-      return 0;
+    if (compass == null || locationAt == null) {
+      return 75;
     } else {
       pointingAt = compass.facing;
     }
@@ -82,7 +83,7 @@ class RouteScreenState extends State<RouteScreen> {
 
     if (diff < 10) {
       // green
-      return 100;
+      return 150;
     } else if (diff < 20) {
       // orange
       return 500;
@@ -114,11 +115,11 @@ class RouteScreenState extends State<RouteScreen> {
                 routeLength.toString());
           } else if (snapshot.hasError) {
             print(snapshot.error);
-            return Text('Kon route niet laden!');
+            return Text('Offline: Mock route');
           } else {
             route = json.decode(backupRoute);
             var routeLength = route['path'].length - 1;
-            return Text('Route: ' +
+            return Text('Backuproute: ' +
                 route['meta']['route_name'] +
                 ' | Lengte: ' +
                 selectedIndex.toString() +
@@ -127,7 +128,11 @@ class RouteScreenState extends State<RouteScreen> {
           }
         },
       )),
-      body: Center(child: compass),
+      body: Center(
+          child: route['path'][selectedIndex]['to_next'] == null?
+          const Text('Route compleet!', style: TextStyle(fontSize: 30.0)) :
+          compass
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(

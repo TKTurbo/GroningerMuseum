@@ -39,7 +39,7 @@ class Compass extends StatelessWidget {
         // show error message
         if (direction == null) {
           return const Center(
-            child: Text("Device does not have sensors !"),
+            child: Text("Apparaat heeft geen werkende sensoren!"),
           );
         }
 
