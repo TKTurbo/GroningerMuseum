@@ -12,7 +12,7 @@ Code voor de native flutter app
 ### /backend
 Backend in python waar calls vanuit de frontend naar gemaakt worden
 
-### /board
+### /esp32
 Code voor de ESP32
 
 ## Links
