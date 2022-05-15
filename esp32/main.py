@@ -27,6 +27,15 @@ class Ble():
         elif event == 2:
             print("disconnected test")
             self.disconnected()
+        
+        elif event == 3:
+            print("message test")
+            buffer = self.ble.gatts_read(self.rx)
+            message = buffer.decode('UTF-8')
+            print(message)
+
+            if message == 'led':
+                self.led.value(not self.led.value())
     
     def connected(self):
     
@@ -54,6 +63,9 @@ class Ble():
         BLE_UART = (BLE_NUS, (BLE_TX, BLE_RX,))
         SERVICES = (BLE_UART, )
         ((self.tx, self.rx,), ) = self.ble.gatts_register_services(SERVICES)
+
+    def send(self, data):
+        self.ble.gatts_notify(0, self.tx, data + '\n')
 
     def advertise(self):
         name = bytes(self.name, 'UTF-8')
