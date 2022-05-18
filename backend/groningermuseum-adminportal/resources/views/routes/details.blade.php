@@ -46,7 +46,8 @@
                         <tbody>
                             @foreach($subroutes as $route)
                                 <tr>
-                                    <td><a href="#">{{ $route->name }}</a></td>
+                                    <td><a href="{{route('routes.subroutes.subroute.details', ['route_id' => $selected_route->id, 'subroute_id' => $route->id])}}">
+                                        {{ $route->name }}</a></td>
                                     <td>{{ $route->description }}</td>
                                     <td>{{ $route->order_number }}</td>
                                     <td></td>

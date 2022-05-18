@@ -16,7 +16,7 @@ class SubRouteController extends Controller
             'button' => 'Subroute(s) opslaan...'
         ];
 
-        $min_order = SubRoute::max('order_number');
+        $min_order = SubRoute::where('route_id', $route_id)->max('order_number');
 
         return view('routes.subroutes.form', compact('attr','min_order', 'route_id'));
     }
@@ -27,7 +27,26 @@ class SubRouteController extends Controller
         $processor = new SubRouteProcessor($request->all(), $route_id, $subroute);
         $processor->store();
 
+        if (isset($request->all()['image_check']))
+        {
+            $attr = [
+                'header' => 'Afbeelding uploaden voor ' . $processor->subroute->name,
+                'button' => 'Afbeelding opslaan...',
+                'upload' => True
+        ];
+
+        $subroute = $processor->subroute;
+
+            return view('routes.subroutes.form', compact('attr', 'route_id', 'subroute'));
+        }
+
         return redirect(route('routes.details', [$route_id = $route_id]));
+    }
+
+    public function uploadImage($route_id, $subroute_id, Request $request)
+    {
+        $subroute = SubRoute::find($subroute_id);
+        $subroute->addMedia($request->all()['files'][0])->toMediaCollection();     
     }
 
     public function showOrdering($route_id)
@@ -60,5 +79,17 @@ class SubRouteController extends Controller
         $processor->delete();
 
         return redirect(route('routes.details', [$route_id = $route_id]));
+    }
+
+    public function showSubroute($subroute_id)
+    {
+        $attr = [
+            'header' => 'subroute', ];
+        $subroute = SubRoute::find($subroute_id);
+
+        $image = $subroute->getMedia();
+        dd($image);
+
+        return view('routes.subroutes.details', compact('subroute', 'attr'));
     }
 }

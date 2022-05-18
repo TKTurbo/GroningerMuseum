@@ -21,12 +21,15 @@ class SubRouteProcessor
 
 	public function store()
 	{
+		//dd($this->request);
 		// Get the values from the request, insert it into the route and save it
 		$this->subroute->route_id = $this->route_id;
 		$this->subroute->name = $this->request['name'];
 		$this->subroute->description = $this->request['description'];
 		$this->subroute->order_number = $this->request['quantity'];
 		$this->subroute->save();
+
+		# dd($this->subroute->addMedia($this->request['file'])->toMediaCollection());
 	}
 
 	public function updateOrdering()

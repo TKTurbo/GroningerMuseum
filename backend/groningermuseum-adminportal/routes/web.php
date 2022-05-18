@@ -57,6 +57,10 @@ Route::group([ 'middleware' => 'auth'], function()
            Route::delete('/delete/{subroute_id}', ['as' => 'delete', 'uses' => 'App\Http\Controllers\SubRouteController@delete']);
            Route::get('/order', ['as' => 'order', 'uses' => 'App\Http\Controllers\SubRouteController@showOrdering']);
            Route::post('/order', ['as' => 'order.store', 'uses' => 'App\Http\Controllers\SubRouteController@updateOrdering']);
+
+           Route::post('/upload-image/{subroute_id}', ['as' => 'upload-image', 'uses' => 'App\Http\Controllers\SubRouteController@uploadImage']);
+
+           Route::get('/subroute/{subroute_id}', ['as' => 'subroute.details', 'uses' => 'App\Http\Controllers\SubRouteController@showSubroute']);
         });
 
     });

@@ -47,4 +47,3 @@ Route::get('themes/{id}/get', function($id) {
     return App\Models\Theme::find($id);
 
 });
-
