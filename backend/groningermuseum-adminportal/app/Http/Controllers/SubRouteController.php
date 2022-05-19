@@ -81,15 +81,15 @@ class SubRouteController extends Controller
         return redirect(route('routes.details', [$route_id = $route_id]));
     }
 
-    public function showSubroute($subroute_id)
+    public function showSubroute($route_id, $subroute_id)
     {
         $attr = [
             'header' => 'subroute', ];
         $subroute = SubRoute::find($subroute_id);
 
-        $image = $subroute->getMedia();
-        dd($image);
+        $image = $subroute->getMedia()[0]->getUrl();
 
-        return view('routes.subroutes.details', compact('subroute', 'attr'));
+
+        return view('routes.subroutes.details', compact('subroute', 'image', 'attr'));
     }
 }

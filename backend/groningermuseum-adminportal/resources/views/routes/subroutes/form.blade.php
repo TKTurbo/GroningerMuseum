@@ -23,7 +23,7 @@
                                 </div>
 
                                 <div class="uk-width-1-1@s">
-                                    <label for="image_check">Klik de checkbox aan als je afbeelding(en) wilt toevoegen: </label>
+                                    <label for="image_check"><span uk-icon="icon: info; ratio: 0.75" uk-tooltip="Door dit aan te vinken krijg je na het opslaan van een subroute de mogelijkheid om een of meer afbeeldingen te uploaden bij deze subroute"></span> Klik de checkbox aan als je afbeelding(en) wilt toevoegen: </label>
                                     <input type="checkbox" class="uk-checkbox" id="image_check" name="image_check" value="1">
                                 <hr>
 

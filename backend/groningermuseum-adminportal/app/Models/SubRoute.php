@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class SubRoute extends Model implements HasMedia
 {
@@ -34,6 +35,15 @@ class SubRoute extends Model implements HasMedia
     public function route()
     {
         return $this->belongsTo(Route::class);
+    }
+
+    public function registerMediaConversions(Media $media = null): void
+    {
+       $this->addMediaConversion('thumb')
+          ->width(368)
+          ->height(232)
+          ->sharpen(10)
+          ->nonOptimized();
     }
 
 }
