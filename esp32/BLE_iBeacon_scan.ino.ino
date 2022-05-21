@@ -3,6 +3,8 @@
    Ported to Arduino ESP32 by Evandro Copercini
 */
 
+// https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_dev_index.json
+
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEScan.h>
