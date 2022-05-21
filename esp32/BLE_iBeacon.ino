@@ -23,8 +23,9 @@
 #include "esp_sleep.h"
 
 #define GPIO_DEEP_SLEEP_DURATION     2  // sleep x seconds and then wake up
-RTC_DATA_ATTR static time_t last;        // remember last boot in RTC Memory
-RTC_DATA_ATTR static uint32_t bootcount; // remember number of boots in RTC Memory
+#define uS_TO_S_FACTOR 1000000  /* Conversion factor for micro seconds to seconds */
+
+RTC_DATA_ATTR int bootcount = 0; // remember number of boots in RTC Memory
 
 #ifdef __cplusplus
 extern "C" {
@@ -74,12 +75,6 @@ void setup() {
     
   Serial.begin(115200);
   gettimeofday(&now, NULL);
-
-  Serial.printf("start ESP32 %d\n",bootcount++);
-
-  Serial.printf("deep sleep (%lds since last reset, %lds since last boot)\n",now.tv_sec,now.tv_sec-last);
-
-  last = now.tv_sec;
   
   // Create the BLE Device
   BLEDevice::init("");
@@ -96,9 +91,11 @@ void setup() {
   delay(100);
   pAdvertising->stop();
   Serial.printf("enter deep sleep\n");
-  esp_deep_sleep(1000000LL * GPIO_DEEP_SLEEP_DURATION);
+  esp_sleep_enable_timer_wakeup(GPIO_DEEP_SLEEP_DURATION * uS_TO_S_FACTOR);
+  esp_deep_sleep_start();
   Serial.printf("in deep sleep\n");
 }
 
 void loop() {
+  
 }
