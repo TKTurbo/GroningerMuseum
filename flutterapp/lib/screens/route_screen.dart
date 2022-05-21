@@ -1,15 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttermockup/screens/routes_screen.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert' as convert;
-import 'package:fluttermockup/models/Route.dart' as Route;
-
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import '../widgets/compass.dart';
 
-// TODO: should be stateful
 class RouteScreen extends StatefulWidget {
   @override
   RouteScreenState createState() => RouteScreenState();
@@ -20,13 +17,27 @@ class RouteScreenState extends State<RouteScreen> {
   int selectedIndex = 0;
   var route;
   late Future futureRoute;
-  var backupRoute = '{"meta":{"route_name":"Mock","version":"1.0"},"path":[{"name":"Kunstwerk","to_next":120},{"name":"Gang 1","to_next":20},{"name":"Gang 2","to_next":90},{"name":"Beeld","to_next":0},{"name":"Gang 3","to_next":270},{"name":"Expositie","to_next":null}]}';
+  var backupRoute =
+      '{"meta":{"route_name":"Mock","version":"1.0"},"path":[{"name":"Kunstwerk","to_next":120},{"name":"Gang 1","to_next":20},{"name":"Gang 2","to_next":90},{"name":"Beeld","to_next":0},{"name":"Gang 3","to_next":270},{"name":"Expositie","to_next":null}]}';
+  var compass;
+  var previousVibrationDelay;
+  bool endloop = false;
+  bool couldNotConnect = false;
 
   @override
   void initState() {
     super.initState();
     route = json.decode(backupRoute);
     futureRoute = fetchRoute();
+    bool shouldVibrate = true; // TODO: check if can and should vibrate
+    compass = Compass(route['path'][selectedIndex]['to_next']);
+    doVibrate();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    endloop = true;
   }
 
   Future<http.Response> fetchRoute() async {
@@ -37,13 +48,49 @@ class RouteScreenState extends State<RouteScreen> {
     setState(() {
       if (index == 0 && selectedIndex > 0) {
         selectedIndex--;
-      } else if (index == 2 && selectedIndex < route['path'].length-1) {
+      } else if (index == 2 && selectedIndex < route['path'].length - 1) {
         selectedIndex++;
       } else if (index == 1) {
         // TODO: explain selected index in route
         print(route['path'][selectedIndex]);
       }
+      compass = Compass(route['path'][selectedIndex]['to_next']);
     });
+  }
+
+  doVibrate() async {
+    while (true) {
+      await Future.delayed(Duration(milliseconds: getVibrationDelay()), () {
+        Vibrate.feedback(FeedbackType.medium);
+      });
+      if (endloop) {
+        break;
+      }
+    }
+  }
+
+  getVibrationDelay() {
+    // TODO: should be independent because code reusing
+    var locationAt = route['path'][selectedIndex]['to_next'];
+    var pointingAt;
+
+    if (compass == null || locationAt == null) {
+      return 75;
+    } else {
+      pointingAt = compass.facing;
+    }
+    var diff = (locationAt - pointingAt).abs();
+
+    if (diff < 10) {
+      // green
+      return 150;
+    } else if (diff < 20) {
+      // orange
+      return 500;
+    } else {
+      // red
+      return 1000;
+    }
   }
 
   @override
@@ -59,22 +106,33 @@ class RouteScreenState extends State<RouteScreen> {
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
             route = json.decode(snapshot.data.body);
-            var routeLength =  route['path'].length-1;
+            var routeLength = route['path'].length - 1;
             return Text('Route: ' +
                 route['meta']['route_name'] +
-                ' | Lengte: ' + selectedIndex.toString() + '/' + routeLength.toString());
-          } else if(snapshot.hasError) {
-            return Text('${snapshot.error}');
+                ' | Lengte: ' +
+                selectedIndex.toString() +
+                '/' +
+                routeLength.toString());
+          } else if (snapshot.hasError) {
+            print(snapshot.error);
+            return Text('Offline: Mock route');
           } else {
             route = json.decode(backupRoute);
-            var routeLength =  route['path'].length-1;
-            return Text('Route: ' +
+            var routeLength = route['path'].length - 1;
+            return Text('Backuproute: ' +
                 route['meta']['route_name'] +
-                ' | Lengte: ' + selectedIndex.toString() + '/' + routeLength.toString());
+                ' | Lengte: ' +
+                selectedIndex.toString() +
+                '/' +
+                routeLength.toString());
           }
         },
       )),
-      body: Center(child: Compass(route['path'][selectedIndex]['to_next'])),
+      body: Center(
+          child: route['path'][selectedIndex]['to_next'] == null?
+          const Text('Route compleet!', style: TextStyle(fontSize: 30.0)) :
+          compass
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(

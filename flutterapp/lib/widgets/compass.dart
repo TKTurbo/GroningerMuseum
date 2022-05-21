@@ -6,6 +6,7 @@ import 'dart:math' as math;
 class Compass extends StatelessWidget {
   var locationDirection = 0; // Direction the user should move to
   var cleanFacingDirection = 0.0;
+  var facing = 0.0;
 
   Compass(direction) {
     if (direction == null) {
@@ -32,12 +33,13 @@ class Compass extends StatelessWidget {
         }
 
         double? direction = snapshot.data!.heading;
+        facing = direction!;
 
         // if direction is null, then device does not support this sensor
         // show error message
         if (direction == null) {
           return const Center(
-            child: Text("Device does not have sensors !"),
+            child: Text("Apparaat heeft geen werkende sensoren!"),
           );
         }
 
@@ -68,8 +70,6 @@ class Compass extends StatelessWidget {
   }
 
   getDirectionColorFeedback(locationAt, pointingAt) {
-    print(locationAt);
-    print(pointingAt);
     // Gets arrow color depending on how close the user is to the right direction
     // locationAt is the angle from point a to point b
     // pointingAt is the current direction the user is pointing at
