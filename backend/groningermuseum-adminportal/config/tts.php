@@ -6,7 +6,7 @@ return [
      * The disk on which to store converted mp3 files by default. Choose
      * one of the disks you've configured in config/filesystems.php.
      */
-    'disk' => env('TTS_DISK', 'local'),
+    'disk' => env('TTS_DISK', 'public'),
 
     /**
      * The default audio format of the converted text-to-speech audio file.
@@ -29,7 +29,7 @@ return [
      * es-ES, es-MX, es-US, fr-CA, fr-FR, is-IS, it-IT, ja-JP, hi-IN, ko-KR, nb-NO,
      * nl-NL, pl-PL, pt-BR, pt-PT, ro-RO, ru-RU, sv-SE, tr-TR
      */
-    'language' => env('TTS_LANGUAGE', 'en-US'),
+    'language' => env('TTS_LANGUAGE', 'nl-NL'),
 
     'audio' => [
         /**
@@ -80,7 +80,7 @@ return [
              * Mizuki, Naja, Nicole, Penelope, Raveena, Ricardo, Ruben, Russell,
              * Salli, Seoyeon, Takumi, Tatyana, Vicki, Vitoria, Zeina, Zhiyu.
              */
-            'voice_id' => env('AWS_VOICE_ID', 'Amy'),
+            'voice_id' => env('AWS_VOICE_ID', 'Ruben'),
 
             /**
              * You can request any or all of the speech mark types, but leave it empty if you don't use speech marks.

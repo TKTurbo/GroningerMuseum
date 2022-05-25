@@ -16,7 +16,11 @@
                             <div class="uk-card uk-card-default uk-card-body">
                                 <h3 class="uk-card-title">{{$subroute->name}}</h3>
                                 <p>{{$subroute->description}}</p>
-                                <button class="uk-button uk-button-secondary uk-position-bottom-right uk-margin-bottom uk-margin-right">Text-to-speech voorbeeld</button>
+                                <hr>
+                                <p>Hieronder kan je de Text-To-Speech voorbeeld beluisteren van deze beschrijving.</p>
+                                <audio controls="" style="vertical-align: middle" src="{{asset('media/'.$location)}}" type="audio/mp3" controlslist="nodownload">
+                                    Your browser does not support the audio element.
+                                </audio>
                             </div>
                         </div>
 
@@ -28,7 +32,7 @@
 
                     <div class="uk-child-width-1-2@s uk-visible-toggle uk-flex-right uk-grid-match" uk-grid>
 
-                        <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" 
+                        <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1"
                         uk-slider="sets: false; autoplay: true; autoplay-interval: 4500; pause-on-hover: true;">
                             <ul class="uk-slider-items uk-child-width-1-2 uk-child-width-1-2@s uk-child-width-1-3@m">
                                 <li>

@@ -4,9 +4,10 @@ namespace App\Processors;
 
 use App\Models\Route;
 use App\Models\SubRoute;
+use Cion\TextToSpeech\Facades\TextToSpeech;
 use Illuminate\Http\Request;
 
-class SubRouteProcessor 
+class SubRouteProcessor
 {
 	protected $request;
 	protected $route;
@@ -21,6 +22,11 @@ class SubRouteProcessor
 
 	public function store()
 	{
+        $location = 'TTS/output'.$this->route_id.'.mp3';
+        $path = TextToSpeech::disk('media')
+            ->saveTo($location)
+            ->convert($this->request['description']);
+
 		//dd($this->request);
 		// Get the values from the request, insert it into the route and save it
 		$this->subroute->route_id = $this->route_id;
@@ -42,8 +48,8 @@ class SubRouteProcessor
 			array_push($new_order,(int)$row);
 		}
 
-		for ($i=0; $i < count($new_order); $i++) 
-		{ 
+		for ($i=0; $i < count($new_order); $i++)
+		{
 			$subroutes[$i] = SubRoute::where('order_number', $new_order[$i])->first();
 			$subroutes[$i]->order_number = $i + 1;
 		}
