@@ -28,7 +28,7 @@
             <div class="p-6 bg-white border-b border-gray-200">
 
                 <div uk-icon="icon: info; ratio: 0.75" uk-tooltip="Subroutes zijn de route die een bezoeker neemt punt per punt, een punt (dus een kunststuk) is een subroute. Bij meerdere punten (subroutes) creëer je de volledige route die dan onder een hoofdroute zit."></div> Wat zijn subroutes en waarom zijn deze van belang? Hover over de info icon hier links van de tekst voor verdere informatie.
-                    
+
                 <hr class="uk-divider-icon">
 
                 @if(isset($selected_route->subroutes[0]))
@@ -48,38 +48,40 @@
                                 <tr>
                                     <td><a href="{{route('routes.subroutes.subroute.details', ['route_id' => $selected_route->id, 'subroute_id' => $route->id])}}">
                                         {{ $route->name }}</a></td>
-                                    <td>{{ $route->description }}</td>
+                                    <td>{{ Str::limit($route->description, 115) }}</td>
                                     <td>{{ $route->order_number }}</td>
                                     <td></td>
                                     <td>
                                         <a href="#" uk-icon="icon: pencil; ratio: 0.8;"></a>
                                         <a href="#" uk-icon="icon: trash; ratio: 0.8;"
-                                        uk-toggle="target: #my-id"
+                                        uk-toggle="target: #my-id{{$route->id}}"
                                         ></a>
                                     </td>
                                 </tr>
+
+                                <form id="delete-form-{{ $route->id }}" action="{{ route('routes.subroutes.delete', ['route_id' => $selected_route->id, 'subroute_id' => $route->id]) }}"
+                                      method="POST" style="display: none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
+
+                                <div id="my-id{{$route->id}}" uk-modal>
+                                    <div class="uk-modal-dialog uk-modal-body">
+                                        <h2 class="uk-modal-title">Weet je zeker dat je deze subroute wilt verwijderen?</h2>
+                                        <a href="#"
+                                           class="uk-text-danger"
+                                           uk-toggle="target: #my-id"
+                                           onclick="event.preventDefault();
+                                        document.getElementById('delete-form-{{ $route->id }}').submit();">Ok, ik weet het zeker
+                                        </a>
+                                        <button class="uk-modal-close uk-margin-left" type="button">Nee, Anuleer</button>
+                                    </div>
+                                </div>
+
                             @endforeach
                         </tbody>
                     </table>
 
-                    <div id="my-id" uk-modal>
-                        <div class="uk-modal-dialog uk-modal-body">
-                            <h2 class="uk-modal-title">Weet je zeker dat je deze subroute wilt verwijderen?</h2>
-                            <a href="{{ route('routes.delete', [$route_id = $selected_route->id, $subroute_id = $route->id ]) }}"
-                                class="uk-text-danger" 
-                                uk-toggle="target: #my-id"
-                                onclick="event.preventDefault();
-                                document.getElementById('delete-form-{{ $route->id }}').submit();">Ok, ik weet het zeker
-                            </a>
-                            <button class="uk-modal-close uk-margin-left" type="button">Nee, Anuleer</button>
-                        </div>
-                    </div>
-
-                    <form id="delete-form-{{ $route->id }}" action="{{ route('routes.subroutes.delete', ['route_id' => $selected_route->id, 'subroute_id' => $route->id]) }}"
-                        method="POST" style="display: none;">
-                        @csrf
-                        @method('DELETE')
-                    </form>
 
 
                     <hr class="uk-divider-icon">

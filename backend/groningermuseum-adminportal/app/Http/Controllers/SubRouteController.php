@@ -8,6 +8,7 @@ use App\Models\Route;
 use App\Processors\SubRouteProcessor;
 use Cion\TextToSpeech\Facades\TextToSpeech;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class SubRouteController extends Controller
 {
@@ -90,24 +91,8 @@ class SubRouteController extends Controller
 
         $subroute = SubRoute::find($subroute_id);
 
-        $image = $subroute->getMedia()[0]->getUrl();
-
         $location = 'TTS/output'.$subroute->id.'.mp3';
 
-
-
-        #$image = '';
-
-        return view('routes.subroutes.details', compact('subroute', 'location', 'image', 'attr'));
-    }
-
-    public function getTTS($subroute_id)
-    {
-        $subroute = SubRoute::find($subroute_id);
-        $path = TextToSpeech::disk('public')
-            ->saveTo('TTS/output'.$subroute->id.'.mp3')
-            ->convert($subroute->description);
-
-        $path = Storage::disk('public')->download($path);
+        return view('routes.subroutes.details', compact('subroute', 'location', 'attr'));
     }
 }

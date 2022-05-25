@@ -40,8 +40,8 @@ class SubRoute extends Model implements HasMedia
     public function registerMediaConversions(Media $media = null): void
     {
        $this->addMediaConversion('thumb')
-          ->width(368)
-          ->height(232)
+          ->width(250)
+          ->height(500)
           ->sharpen(10)
           ->nonOptimized();
     }

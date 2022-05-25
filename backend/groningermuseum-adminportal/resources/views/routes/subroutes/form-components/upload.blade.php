@@ -15,7 +15,7 @@
     var tokenElement = document.head.querySelector('meta[name="csrf-token"]');
     var token;
 
-    var newUrl = "{{route('routes.details', ['route_id' => $route_id ])}}"
+    var newUrl = "{{route('routes.subroutes.subroute.details', ['route_id' => $route_id, 'subroute_id' => $subroute->id] )}}"
 
     console.log(tokenElement)
 

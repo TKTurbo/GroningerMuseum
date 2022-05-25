@@ -24,35 +24,16 @@
                             </div>
                         </div>
 
-                        <div class="uk-child-width-1-2@s uk-grid-match">
-                            <img src="{{$image}}">
-                        </div>
-
-                    </div>
-
-                    <div class="uk-child-width-1-2@s uk-visible-toggle uk-flex-right uk-grid-match" uk-grid>
-
-                        <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1"
-                        uk-slider="sets: false; autoplay: true; autoplay-interval: 4500; pause-on-hover: true;">
-                            <ul class="uk-slider-items uk-child-width-1-2 uk-child-width-1-2@s uk-child-width-1-3@m">
-                                <li>
-                                    <img src="https://source.unsplash.com/random/200x200?sig=1" alt="">
-                                    <div class="uk-position-center uk-panel"><h1>1</h1></div>
-                                </li>
-                                <li>
-                                    <img src="https://source.unsplash.com/random/200x200?sig=2" alt="">
-                                    <div class="uk-position-center uk-panel"><h1>2</h1></div>
-                                </li>
-                                <li>
-                                    <img src="https://source.unsplash.com/random/200x200?sig=3" alt="">
-                                    <div class="uk-position-center uk-panel"><h1>3</h1></div>
-                                </li>
-                                <li>
-                                    <img src="https://source.unsplash.com/random/200x200?sig=4" alt="">
-                                    <div class="uk-position-center uk-panel"><h1>4</h1></div>
-                                </li>
-                            </ul>
-                        </div>
+                        @if(!empty($subroute->getMedia()[0]))
+                            <div class="uk-child-width-1-2@s uk-grid-match">
+                                <img src="{{$subroute->getMedia()[0]->getUrl('thumb')}}" style="width: 250px; height: 500px;" />
+                            </div>
+                        @else
+                            <div class="uk-child-width-1-2@s">
+                                <img src="https://www.bibliotheekwerk.nl/wp-content/uploads/2016/06/geen_foto_beschikbaar.jpg"
+                                     style="width: 250px; height: 500px;"/>
+                            </div>
+                        @endif
 
                     </div>
 

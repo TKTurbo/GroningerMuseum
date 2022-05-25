@@ -22,11 +22,6 @@ class SubRouteProcessor
 
 	public function store()
 	{
-        $location = 'TTS/output'.$this->route_id.'.mp3';
-        $path = TextToSpeech::disk('media')
-            ->saveTo($location)
-            ->convert($this->request['description']);
-
 		//dd($this->request);
 		// Get the values from the request, insert it into the route and save it
 		$this->subroute->route_id = $this->route_id;
@@ -34,6 +29,11 @@ class SubRouteProcessor
 		$this->subroute->description = $this->request['description'];
 		$this->subroute->order_number = $this->request['quantity'];
 		$this->subroute->save();
+
+        $location = 'TTS/output'.$this->subroute->id.'.mp3';
+        $path = TextToSpeech::disk('media')
+            ->saveTo($location)
+            ->convert($this->request['description']);
 
 		# dd($this->subroute->addMedia($this->request['file'])->toMediaCollection());
 	}
