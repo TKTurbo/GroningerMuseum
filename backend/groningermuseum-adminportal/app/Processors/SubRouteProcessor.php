@@ -6,6 +6,7 @@ use App\Models\Route;
 use App\Models\SubRoute;
 use Cion\TextToSpeech\Facades\TextToSpeech;
 use Illuminate\Http\Request;
+use File;
 
 class SubRouteProcessor
 {
@@ -22,7 +23,6 @@ class SubRouteProcessor
 
 	public function store()
 	{
-		//dd($this->request);
 		// Get the values from the request, insert it into the route and save it
 		$this->subroute->route_id = $this->route_id;
 		$this->subroute->name = $this->request['name'];
@@ -30,12 +30,11 @@ class SubRouteProcessor
 		$this->subroute->order_number = $this->request['quantity'];
 		$this->subroute->save();
 
-		# dd($this->subroute->addMedia($this->request['file'])->toMediaCollection());
 	}
 
 	public function updateOrdering()
 	{
-
+        // Update the ordering
 		$new_order = [];
 
 		foreach(explode(',',$this->request['new_order']) as $row)
@@ -62,6 +61,14 @@ class SubRouteProcessor
 
 	public function delete()
 	{
+
+        // delete the TTS message from the public storage.
+        $location = 'media/TTS/output'.$this->subroute->id.'.mp3';
+        if(File::exists(public_path($location))) {
+            File::delete(public_path($location));
+        }
+
+        // Delete the entire subroute.
 		$this->subroute->delete();
 	}
 

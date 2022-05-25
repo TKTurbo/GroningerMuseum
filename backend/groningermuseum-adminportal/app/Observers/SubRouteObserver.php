@@ -37,7 +37,7 @@ class SubRouteObserver
      */
     public function deleted(SubRoute $subRoute)
     {
-        //
+
     }
 
     /**

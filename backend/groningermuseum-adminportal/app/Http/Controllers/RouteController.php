@@ -10,6 +10,12 @@ use App\Models\SubRoute;
 
 class RouteController extends Controller
 {
+
+    /**
+     * Show the main page for the routes
+     *
+     * @return view
+     */
     public function show_main()
     {
         // Get all the routes.
@@ -24,6 +30,11 @@ class RouteController extends Controller
         return view('routes.main', compact('routes', 'attr'));
     }
 
+    /**
+     * Show the create route form
+     *
+     * @return view
+     */
     public function showCreate()
     {
         // Attributes for the view
@@ -38,10 +49,18 @@ class RouteController extends Controller
         return view('routes.form', compact('attr'));
     }
 
+    /**
+     * Show the update form
+     *
+     * @param route_id: The identifier of the route.
+     * @return view
+     */
     public function showUpdateForm($route_id)
     {
+        // Find the route and sees if it exists.
         $route = Route::find($route_id);
 
+        // Set the attributes.
         $attr = [
             'header' => $route->name,
             'button' => 'Route updaten en opslaan',
@@ -53,10 +72,15 @@ class RouteController extends Controller
         return view ('routes.form', compact('route', 'attr'));
     }
 
-
+    /**
+     * Show the details page of a route
+     *
+     * @param route_id: The identifier of the route.
+     * @return view
+     */
     public function showDetails($route_id)
     {
-        // detail view
+        // Find the selected route and find the subroutes of that route.
         $selected_route = Route::find($route_id);
         $subroutes = SubRoute::where('route_id', $route_id)->orderBy('order_number')->get();
 
@@ -67,6 +91,11 @@ class RouteController extends Controller
         return view('routes.details', compact('selected_route','subroutes', 'attr'));
     }
 
+    /**
+     * Store a route
+     * @param Request $request
+     * @return Route $route
+     */
     public function store(Request $request)
     {
         // Iniatalize a new route and processor. Handle the request and store it
@@ -77,6 +106,13 @@ class RouteController extends Controller
         return redirect(route('routes.main'));
     }
 
+    /**
+     * Update a new route
+     *
+     * @param Request $request
+     * @param $route_id: The identifier of the given route
+     * @return view
+     */
     public function update(Request $request, $route_id)
     {
         // update...
@@ -93,6 +129,12 @@ class RouteController extends Controller
 
     }
 
+    /**
+     * Delete a route
+     * @param Request $request
+     * @param $route_id: The identifier of the given route
+     * @return view/subroute/form
+     */
     public function delete(Request $request, $route_id)
     {
         // Get the selected route, iniatalize a new processor and delete the selected route.
