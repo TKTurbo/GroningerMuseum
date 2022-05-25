@@ -30,11 +30,6 @@ class SubRouteProcessor
 		$this->subroute->order_number = $this->request['quantity'];
 		$this->subroute->save();
 
-        $location = 'TTS/output'.$this->subroute->id.'.mp3';
-        $path = TextToSpeech::disk('media')
-            ->saveTo($location)
-            ->convert($this->request['description']);
-
 		# dd($this->subroute->addMedia($this->request['file'])->toMediaCollection());
 	}
 

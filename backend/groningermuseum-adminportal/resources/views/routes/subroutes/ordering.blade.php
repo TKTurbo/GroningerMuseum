@@ -14,8 +14,8 @@
                 <div class="p-6 bg-white border-b border-gray-200">
 
                     <p>Het ordernen van een subroute gaat in volgorde van 1 t/m x.</p>
-                   
-                    <form method="POST" 
+
+                    <form method="POST"
                           action="#">
                         @csrf
                         <fieldset class="uk-fieldset">
@@ -24,17 +24,30 @@
 
                                 @foreach($subroutes as $key => $subroute)
                                 <li id="{{$subroute->order_number}}" name="{{$subroute->name}}">
-                                    <div class="uk-card uk-card-default uk-card-body uk-text-center">
-                                        <span class="uk-sortable-handle">{{$subroute->name}}</span>
+                                    <div class="uk-card uk-card-default">
+                                        <div class="uk-card-media-top">
+                                            @if(!empty($subroute->getMedia()[0]))
+                                                <img src="{{$subroute->getMedia()[0]->getUrl('thumb')}}"
+                                                     style="height: 300px; width: 300px;" alt="">
+                                            @else
+                                                <img src="https://www.bibliotheekwerk.nl/wp-content/uploads/2016/06/geen_foto_beschikbaar.jpg"
+                                                     style="height: 300px; width: 300px;" alt="">
+                                            @endif
+                                        </div>
+                                        <div class="uk-card-title">
+                                            <h5 class="uk-text-center">{{$subroute->name}}</h5>
+                                        </div>
                                     </div>
                                 </li>
                                 @endforeach
 
                             </ul>
 
+                        </fieldset>
+
                             <input type="hidden" name="new_order" id="new_order" value="">
 
-                        <button type="submit" class="uk-button uk-button-secondary uk-margin-top">{{ $attr['button'] }}</a>    
+                            <button type="submit" class="uk-button uk-button-secondary uk-margin-top">{{ $attr['button'] }}</button>
                     </form>
 
                 </div>

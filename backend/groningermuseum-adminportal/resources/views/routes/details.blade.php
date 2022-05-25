@@ -85,9 +85,10 @@
 
 
                     <hr class="uk-divider-icon">
-
+                    <a href="#" class="uk-button uk-button-primary">Bestaande subroutes toevoegen</a>
                     <a class="uk-button uk-button-secondary" href="{{ route('routes.subroutes.create', [$route_id = $selected_route->id]) }}">Nieuwe subroutes aanmaken</a>
-                    <a class="uk-button uk-button-secondary" href="{{ route('routes.subroutes.order', [$route_id = $selected_route->id]) }}">Nieuwe subroute ordening toepassen</a>
+
+                    <a class="uk-button uk-button-secondary uk-align-right" href="{{ route('routes.subroutes.order', [$route_id = $selected_route->id]) }}">Nieuwe subroute ordening toepassen</a>
 
                 @else
                     <p>Er zijn nog geen subroutes gevonden... <br> Om een subroute aan te maken klik hieronder op de link. Vul s.v.p. ook alvast de hoeveelheid subroutes in die gemaakt worden.</p>
