@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttermockup/screens/routes_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import '../widgets/compass.dart';
+import 'package:surround_sound/surround_sound.dart';
 
 class RouteScreen extends StatefulWidget {
   @override
@@ -23,6 +25,7 @@ class RouteScreenState extends State<RouteScreen> {
   var previousVibrationDelay;
   bool endloop = false;
   bool couldNotConnect = false;
+  var soundController = SoundController();
 
   @override
   void initState() {
@@ -32,12 +35,20 @@ class RouteScreenState extends State<RouteScreen> {
     bool shouldVibrate = true; // TODO: check if can and should vibrate
     compass = Compass(route['path'][selectedIndex]['to_next']);
     doVibrate();
+
+    // try {
+    //   soundController.play();
+    // } on Exception catch (_) {
+    //   print('never reached');
+    // }
   }
 
   @override
   void dispose() {
     super.dispose();
     endloop = true;
+    // stopFrequency();
+    // soundController.complete(soundController.WebViewController);
   }
 
   Future<http.Response> fetchRoute() async {
@@ -53,15 +64,19 @@ class RouteScreenState extends State<RouteScreen> {
       } else if (index == 1) {
         // TODO: explain selected index in route
         print(route['path'][selectedIndex]);
+        playStop();
       }
       compass = Compass(route['path'][selectedIndex]['to_next']);
     });
   }
 
+
+
   doVibrate() async {
     while (true) {
       await Future.delayed(Duration(milliseconds: getVibrationDelay()), () {
         Vibrate.feedback(FeedbackType.medium);
+        soundController.setPosition(0.2 * cos(compass.facing), 0, 0.2 * sin(compass.facing)); // TODO: refactor
       });
       if (endloop) {
         break;
@@ -91,6 +106,26 @@ class RouteScreenState extends State<RouteScreen> {
       // red
       return 1000;
     }
+  }
+
+  playStop() async {
+
+    // soundController.setVolume(0.2);
+    // soundController.setFrequency(400);
+    // soundController.setPosition(0.2, 0.2, 0.2);
+
+    var playing = await soundController.isPlaying();
+    print(playing);
+
+    if(playing) {
+      soundController.stop();
+    } else {
+      soundController.play();
+    }
+  }
+
+  stopFrequency() async {
+    await soundController.stop();
   }
 
   @override
@@ -128,11 +163,29 @@ class RouteScreenState extends State<RouteScreen> {
           }
         },
       )),
-      body: Center(
-          child: route['path'][selectedIndex]['to_next'] == null?
-          const Text('Route compleet!', style: TextStyle(fontSize: 30.0)) :
-          compass
+
+
+      body: (
+          ListView(
+            children: <Widget> [
+              Center(
+                  child: route['path'][selectedIndex]['to_next'] == null?
+                  const Text('Route compleet!', style: TextStyle(fontSize: 30.0)) :
+                  compass
+              ),
+              Visibility(
+                child: SoundWidget(
+                  soundController: soundController,
+                ),
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                visible: false,
+              ),
+            ]
+          )
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(
