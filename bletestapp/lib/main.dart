@@ -54,10 +54,12 @@ class _MyHomePageState extends State<MyHomePage> {
     widget.flutterBlue.scanResults.listen((List<ScanResult> results) {
       for (ScanResult result in results) {
         _addDeviceTolist(result.device);
+        print('${result.device.name} found! rssi: ${result.rssi}');
       }
     });
     widget.flutterBlue.startScan();
   }
+
 
   ListView _buildListViewOfDevices() {
     List<Container> containers = new List<Container>();
