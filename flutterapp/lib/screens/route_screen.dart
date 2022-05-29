@@ -27,6 +27,9 @@ class RouteScreenState extends State<RouteScreen> {
   bool couldNotConnect = false;
   var soundController = SoundController();
 
+  double volume = 0.1;
+  double freq = 200.0;
+
   @override
   void initState() {
     super.initState();
@@ -47,8 +50,7 @@ class RouteScreenState extends State<RouteScreen> {
   void dispose() {
     super.dispose();
     endloop = true;
-    // stopFrequency();
-    // soundController.complete(soundController.WebViewController);
+    soundController.stop();
   }
 
   Future<http.Response> fetchRoute() async {
@@ -70,13 +72,15 @@ class RouteScreenState extends State<RouteScreen> {
     });
   }
 
-
-
   doVibrate() async {
     while (true) {
       await Future.delayed(Duration(milliseconds: getVibrationDelay()), () {
+        var soundFrom =
+            route['path'][selectedIndex]['to_next'] - compass.facing + 90;
+        print(soundFrom);
+        soundController.setPosition(1 * cos(soundFrom * (pi / 180)), 0.2,
+            1 * sin(soundFrom * (pi / 180))); // TODO: refactor
         Vibrate.feedback(FeedbackType.medium);
-        soundController.setPosition(0.2 * cos(compass.facing), 0, 0.2 * sin(compass.facing)); // TODO: refactor
       });
       if (endloop) {
         break;
@@ -109,7 +113,6 @@ class RouteScreenState extends State<RouteScreen> {
   }
 
   playStop() async {
-
     // soundController.setVolume(0.2);
     // soundController.setFrequency(400);
     // soundController.setPosition(0.2, 0.2, 0.2);
@@ -117,7 +120,7 @@ class RouteScreenState extends State<RouteScreen> {
     var playing = await soundController.isPlaying();
     print(playing);
 
-    if(playing) {
+    if (playing) {
       soundController.stop();
     } else {
       soundController.play();
@@ -127,6 +130,17 @@ class RouteScreenState extends State<RouteScreen> {
   stopFrequency() async {
     await soundController.stop();
   }
+
+//   updateSoundLocation() async {
+//     while (true) {
+//       await Future.delayed(const Duration(milliseconds: 100), () {
+//         soundController.setPosition(1 * cos(compass.facing), 0.2, 1 * sin(compass.facing)); // TODO: refactor
+//       });
+//       if (endloop) {
+//         break;
+//       }
+//     }
+// }
 
   @override
   Widget build(BuildContext context) {
@@ -163,29 +177,46 @@ class RouteScreenState extends State<RouteScreen> {
           }
         },
       )),
-
-
-      body: (
-          ListView(
-            children: <Widget> [
-              Center(
-                  child: route['path'][selectedIndex]['to_next'] == null?
-                  const Text('Route compleet!', style: TextStyle(fontSize: 30.0)) :
-                  compass
-              ),
-              Visibility(
-                child: SoundWidget(
-                  soundController: soundController,
-                ),
-                maintainSize: true,
-                maintainAnimation: true,
-                maintainState: true,
-                visible: false,
-              ),
-            ]
-          )
-      ),
-
+      body: (ListView(children: <Widget>[
+        Center(
+            child: route['path'][selectedIndex]['to_next'] == null
+                ? const Text('Route compleet!',
+                    style: TextStyle(fontSize: 30.0))
+                : compass),
+        Visibility(
+          child: SoundWidget(
+            soundController: soundController,
+          ),
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainState: true,
+          visible: false,
+        ),
+        const Text("Volume"),
+        Slider(
+          value: volume,
+          min: 0,
+          max: 1,
+          onChanged: (val) {
+            setState(() {
+              volume = val;
+              soundController.setVolume(val);
+            });
+          },
+        ),
+        const Text("Toonhoogte"),
+        Slider(
+          value: freq,
+          min: 128,
+          max: 1500,
+          onChanged: (val) {
+            setState(() {
+              freq = val;
+              soundController.setFrequency(val);
+            });
+          },
+        ),
+      ])),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(
