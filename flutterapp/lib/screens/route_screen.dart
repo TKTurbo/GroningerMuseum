@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttermockup/screens/routes_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import '../widgets/compass.dart';
+import 'package:surround_sound/surround_sound.dart';
 
 class RouteScreen extends StatefulWidget {
   @override
@@ -23,6 +25,10 @@ class RouteScreenState extends State<RouteScreen> {
   var previousVibrationDelay;
   bool endloop = false;
   bool couldNotConnect = false;
+  var soundController = SoundController();
+
+  double volume = 0.1;
+  double freq = 200.0;
 
   @override
   void initState() {
@@ -32,12 +38,19 @@ class RouteScreenState extends State<RouteScreen> {
     bool shouldVibrate = true; // TODO: check if can and should vibrate
     compass = Compass(route['path'][selectedIndex]['to_next']);
     doVibrate();
+
+    // try {
+    //   soundController.play();
+    // } on Exception catch (_) {
+    //   print('never reached');
+    // }
   }
 
   @override
   void dispose() {
     super.dispose();
     endloop = true;
+    soundController.stop();
   }
 
   Future<http.Response> fetchRoute() async {
@@ -53,6 +66,7 @@ class RouteScreenState extends State<RouteScreen> {
       } else if (index == 1) {
         // TODO: explain selected index in route
         print(route['path'][selectedIndex]);
+        playStop();
       }
       compass = Compass(route['path'][selectedIndex]['to_next']);
     });
@@ -61,6 +75,11 @@ class RouteScreenState extends State<RouteScreen> {
   doVibrate() async {
     while (true) {
       await Future.delayed(Duration(milliseconds: getVibrationDelay()), () {
+        var soundFrom =
+            route['path'][selectedIndex]['to_next'] - compass.facing + 90;
+        print(soundFrom);
+        soundController.setPosition(1 * cos(soundFrom * (pi / 180)), 0.2,
+            1 * sin(soundFrom * (pi / 180))); // TODO: refactor
         Vibrate.feedback(FeedbackType.medium);
       });
       if (endloop) {
@@ -92,6 +111,36 @@ class RouteScreenState extends State<RouteScreen> {
       return 1000;
     }
   }
+
+  playStop() async {
+    // soundController.setVolume(0.2);
+    // soundController.setFrequency(400);
+    // soundController.setPosition(0.2, 0.2, 0.2);
+
+    var playing = await soundController.isPlaying();
+    print(playing);
+
+    if (playing) {
+      soundController.stop();
+    } else {
+      soundController.play();
+    }
+  }
+
+  stopFrequency() async {
+    await soundController.stop();
+  }
+
+//   updateSoundLocation() async {
+//     while (true) {
+//       await Future.delayed(const Duration(milliseconds: 100), () {
+//         soundController.setPosition(1 * cos(compass.facing), 0.2, 1 * sin(compass.facing)); // TODO: refactor
+//       });
+//       if (endloop) {
+//         break;
+//       }
+//     }
+// }
 
   @override
   Widget build(BuildContext context) {
@@ -128,11 +177,46 @@ class RouteScreenState extends State<RouteScreen> {
           }
         },
       )),
-      body: Center(
-          child: route['path'][selectedIndex]['to_next'] == null?
-          const Text('Route compleet!', style: TextStyle(fontSize: 30.0)) :
-          compass
-      ),
+      body: (ListView(children: <Widget>[
+        Center(
+            child: route['path'][selectedIndex]['to_next'] == null
+                ? const Text('Route compleet!',
+                    style: TextStyle(fontSize: 30.0))
+                : compass),
+        Visibility(
+          child: SoundWidget(
+            soundController: soundController,
+          ),
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainState: true,
+          visible: false,
+        ),
+        const Text("Volume"),
+        Slider(
+          value: volume,
+          min: 0,
+          max: 1,
+          onChanged: (val) {
+            setState(() {
+              volume = val;
+              soundController.setVolume(val);
+            });
+          },
+        ),
+        const Text("Toonhoogte"),
+        Slider(
+          value: freq,
+          min: 128,
+          max: 1500,
+          onChanged: (val) {
+            setState(() {
+              freq = val;
+              soundController.setFrequency(val);
+            });
+          },
+        ),
+      ])),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           const BottomNavigationBarItem(

@@ -41,6 +41,7 @@ dependencies:
   flutter_sensors: ^1.0.1
   http: ^0.13.4
   flutter_vibrate: ^1.3.0
+  surround_sound: ^0.3.2
 
 dev_dependencies:
   flutter_test:
