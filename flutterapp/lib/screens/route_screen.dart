@@ -66,7 +66,7 @@ class RouteScreenState extends State<RouteScreen> {
       } else if (index == 1) {
         // TODO: explain selected index in route
         print(route['path'][selectedIndex]);
-        playStop();
+        // playStop();
       }
       compass = Compass(route['path'][selectedIndex]['to_next']);
     });
@@ -183,39 +183,39 @@ class RouteScreenState extends State<RouteScreen> {
                 ? const Text('Route compleet!',
                     style: TextStyle(fontSize: 30.0))
                 : compass),
-        Visibility(
-          child: SoundWidget(
-            soundController: soundController,
-          ),
-          maintainSize: true,
-          maintainAnimation: true,
-          maintainState: true,
-          visible: false,
-        ),
-        const Text("Volume"),
-        Slider(
-          value: volume,
-          min: 0,
-          max: 1,
-          onChanged: (val) {
-            setState(() {
-              volume = val;
-              soundController.setVolume(val);
-            });
-          },
-        ),
-        const Text("Toonhoogte"),
-        Slider(
-          value: freq,
-          min: 128,
-          max: 1500,
-          onChanged: (val) {
-            setState(() {
-              freq = val;
-              soundController.setFrequency(val);
-            });
-          },
-        ),
+        // Visibility(
+        //   child: SoundWidget(
+        //     soundController: soundController,
+        //   ),
+        //   maintainSize: true,
+        //   maintainAnimation: true,
+        //   maintainState: true,
+        //   visible: false,
+        // ),
+        // const Text("Volume"),
+        // Slider(
+        //   value: volume,
+        //   min: 0,
+        //   max: 1,
+        //   onChanged: (val) {
+        //     setState(() {
+        //       volume = val;
+        //       soundController.setVolume(val);
+        //     });
+        //   },
+        // ),
+        // const Text("Toonhoogte"),
+        // Slider(
+        //   value: freq,
+        //   min: 128,
+        //   max: 1500,
+        //   onChanged: (val) {
+        //     setState(() {
+        //       freq = val;
+        //       soundController.setFrequency(val);
+        //     });
+        //   },
+        // ),
       ])),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
