@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import '../widgets/compass.dart';
 import 'package:surround_sound/surround_sound.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 class RouteScreen extends StatefulWidget {
   @override
@@ -20,7 +21,7 @@ class RouteScreenState extends State<RouteScreen> {
   var route;
   late Future futureRoute;
   var backupRoute =
-      '{"meta":{"route_name":"Mock","version":"1.0"},"path":[{"name":"Kunstwerk","to_next":120},{"name":"Gang 1","to_next":20},{"name":"Gang 2","to_next":90},{"name":"Beeld","to_next":0},{"name":"Gang 3","to_next":270},{"name":"Expositie","to_next":null}]}';
+      '{"meta":{"route_name":"Mock","version":"1.0"},"path":[{"name":"Kunstwerk","to_next":120, "beaconUuid": "4fafc201-1fb5-459e-8fcc-c5c9c331914b"},{"name":"Gang 1","to_next":20},{"name":"Gang 2","to_next":90},{"name":"Beeld","to_next":0},{"name":"Gang 3","to_next":270},{"name":"Expositie","to_next":null}]}';
   var compass;
   var previousVibrationDelay;
   bool endloop = false;
@@ -29,6 +30,11 @@ class RouteScreenState extends State<RouteScreen> {
 
   double volume = 0.1;
   double freq = 200.0;
+
+  var distanceCMtoNearestPoint = null;
+
+  final String testServiceUuid = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
+  final FlutterBlue flutterBlue = FlutterBlue.instance;
 
   @override
   void initState() {
@@ -39,11 +45,23 @@ class RouteScreenState extends State<RouteScreen> {
     compass = Compass(route['path'][selectedIndex]['to_next']);
     doVibrate();
 
-    // try {
-    //   soundController.play();
-    // } on Exception catch (_) {
-    //   print('never reached');
-    // }
+    flutterBlue.scanResults.listen((List<ScanResult> results) {
+      for (ScanResult result in results) {
+        if(result.advertisementData.serviceUuids.isNotEmpty) {
+          if(result.advertisementData.serviceUuids[0] == testServiceUuid) {
+            var N = 2;
+            var mpower = -69;
+            num distanceCM = pow(10, ((mpower - result.rssi)) / (10 * N)) * 100;
+            setState(() {
+              distanceCMtoNearestPoint = distanceCM;
+            });
+            print('Routepoint ${result.device.name} found! rssi: ${result.rssi}. Approx. distance: ${distanceCM} cm');
+          }
+        }
+      }
+    });
+
+    doScan();
   }
 
   @override
@@ -77,7 +95,6 @@ class RouteScreenState extends State<RouteScreen> {
       await Future.delayed(Duration(milliseconds: getVibrationDelay()), () {
         var soundFrom =
             route['path'][selectedIndex]['to_next'] - compass.facing + 90;
-        print(soundFrom);
         soundController.setPosition(1 * cos(soundFrom * (pi / 180)), 0.2,
             1 * sin(soundFrom * (pi / 180))); // TODO: refactor
         Vibrate.feedback(FeedbackType.medium);
@@ -129,6 +146,19 @@ class RouteScreenState extends State<RouteScreen> {
 
   stopFrequency() async {
     await soundController.stop();
+  }
+
+  doScan() async {
+    while (true) {
+      flutterBlue.startScan();
+      await Future.delayed(Duration(milliseconds: 1000), () {
+        print(flutterBlue.isScanning);
+        flutterBlue.stopScan();
+      });
+      if (endloop) {
+        break;
+      }
+    }
   }
 
 //   updateSoundLocation() async {
@@ -226,7 +256,7 @@ class RouteScreenState extends State<RouteScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.arrow_downward),
-            label: route['path'][selectedIndex]['name'],
+            label: route['path'][selectedIndex]['name'] + '\n± ' + distanceCMtoNearestPoint.toStringAsFixed(0) + 'cm',
             backgroundColor: Colors.black,
           ),
           const BottomNavigationBarItem(
