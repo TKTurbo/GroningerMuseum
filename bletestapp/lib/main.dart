@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -32,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _writeController = TextEditingController();
   BluetoothDevice _connectedDevice;
   List<BluetoothService> _services;
+  final String serviceUuid = '4fafc201-1fb5-459e-8fcc-c5c9c331914b';
 
   _addDeviceTolist(final BluetoothDevice device) {
     if (!widget.devicesList.contains(device)) {
@@ -44,22 +46,58 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    widget.flutterBlue.connectedDevices
-        .asStream()
-        .listen((List<BluetoothDevice> devices) {
-      for (BluetoothDevice device in devices) {
-        _addDeviceTolist(device);
-      }
-    });
+    // widget.flutterBlue.connectedDevices
+    //     .asStream()
+    //     .listen((List<BluetoothDevice> devices) {
+    //   for (BluetoothDevice device in devices) {
+    //     _addDeviceTolist(device);
+    //   }
+    // });
     widget.flutterBlue.scanResults.listen((List<ScanResult> results) {
       for (ScanResult result in results) {
         _addDeviceTolist(result.device);
-        print('${result.device.name} found! rssi: ${result.rssi}');
+        if(result.advertisementData.serviceUuids.length > 0) {
+          if(result.advertisementData.serviceUuids[0] == this.serviceUuid) {
+            var N = 2;
+            var mpower = -69;
+            double distance = pow(10, ((mpower - result.rssi)) / (10 * N));
+            print('Routepoint ${result.device.name} found! rssi: ${result.rssi}. Approx. distance: ${distance * 100} cm');
+          }
+        }
+        // if(result.device.AdvertisementData.serviceUuids[0] == this.serviceUuid)
+        // print(result.advertisementData.serviceUuids[0]);
+        // if(result.advertisementData.serviceUuids[0] != null && result.advertisementData.serviceUuids[0] == this.serviceUuid) {
+        //   var N = 2;
+        //   var mpower = -69;
+        //   double distance = pow(10, ((mpower - result.rssi)) / (10 * N));
+        //   print('Routepoint ${result.device.name} found! rssi: ${result.rssi}. Approx. distance: ${distance * 100} cm');
+        // }
       }
     });
-    widget.flutterBlue.startScan();
+    print(widget.flutterBlue.scanResults);
+    // widget.flutterBlue.stopScan();
+    // widget.flutterBlue.startScan(timeout: Duration(seconds: 4));
+    doScan();
   }
 
+  doScan() async {
+    while (true) {
+      widget.flutterBlue.startScan(timeout: Duration(seconds: 5));
+      await Future.delayed(Duration(milliseconds: 5000), () {
+        // widget.flutterBlue.stopScan();
+        print(widget.flutterBlue.scanResults);
+      });
+    }
+  }
+
+  listenChange() async {
+    // await widget.flutterBlue.setNotifyValue(true);
+    // characteristic.value.listen((value) {
+    //   // do something with new value
+    // });
+
+    print(widget.flutterBlue.scanResults);
+  }
 
   ListView _buildListViewOfDevices() {
     List<Container> containers = new List<Container>();
