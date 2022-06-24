@@ -7,8 +7,9 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <!-- BLE -->
     <uses-permission android:name="android.permission.BLUETOOTH" />  
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />  
-   <application
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
+    <application
         android:label="fluttermockup"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
