@@ -45,23 +45,27 @@ class RouteScreenState extends State<RouteScreen> {
     compass = Compass(route['path'][selectedIndex]['to_next']);
     doVibrate();
 
-    flutterBlue.scanResults.listen((List<ScanResult> results) {
-      for (ScanResult result in results) {
-        if(result.advertisementData.serviceUuids.isNotEmpty) {
-          if(result.advertisementData.serviceUuids[0] == testServiceUuid) {
-            var N = 2;
-            var mpower = -69;
-            num distanceCM = pow(10, ((mpower - result.rssi)) / (10 * N)) * 100;
-            setState(() {
-              distanceCMtoNearestPoint = distanceCM;
-            });
-            print('Routepoint ${result.device.name} found! rssi: ${result.rssi}. Approx. distance: ${distanceCM} cm');
-          }
-        }
-      }
-    });
+    // flutterBlue.scanResults.listen((List<ScanResult> results) {
+    //   for (ScanResult result in results) {
+    //     if(result.advertisementData.serviceUuids.isNotEmpty) {
+    //       if(result.advertisementData.serviceUuids[0] == testServiceUuid) {
+    //         var N = 2;
+    //         var mpower = -69;
+    //         num distanceCM = pow(10, ((mpower - result.rssi)) / (10 * N)) * 100;
+    //         setState(() {
+    //           distanceCMtoNearestPoint = distanceCM;
+    //         });
+    //         print('Routepoint ${result.device.name} found! rssi: ${result.rssi}. Approx. distance: ${distanceCM} cm');
+    //         break;
+    //       }
+    //     }
+    //   }
+    // });
 
-    doScan();
+    // flutterBlue.startScan();
+    // doScan();
+
+    setStream(getScanStream());
   }
 
   @override
@@ -150,9 +154,9 @@ class RouteScreenState extends State<RouteScreen> {
 
   doScan() async {
     while (true) {
-      flutterBlue.startScan();
-      await Future.delayed(Duration(milliseconds: 1000), () {
-        print(flutterBlue.isScanning);
+      flutterBlue.startScan(timeout: Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 2), () {
+        // print(flutterBlue.isScanning);
         flutterBlue.stopScan();
       });
       if (endloop) {
@@ -160,6 +164,51 @@ class RouteScreenState extends State<RouteScreen> {
       }
     }
   }
+
+  Stream<ScanResult> getScanStream() {
+    return FlutterBlue.instance.scan(timeout: Duration(seconds: 5));
+  }
+
+  void setStream(Stream<ScanResult> stream) async {
+    stream.listen((event) {
+          if(event.advertisementData.serviceUuids.isNotEmpty) {
+            if(event.advertisementData.serviceUuids[0] == testServiceUuid) {
+              var N = 2;
+              var mpower = -69;
+              num distanceCM = pow(10, ((mpower - event.rssi)) / (10 * N)) * 100;
+              setState(() {
+                distanceCMtoNearestPoint = distanceCM;
+              });
+              print('Routepoint ${event.device.name} found! rssi: ${event.rssi}. Approx. distance: ${distanceCM} cm');
+            }
+          }
+
+    }, onDone: () async {
+      // Scan is finished ****************
+      await FlutterBlue.instance.stopScan();
+      setStream(getScanStream()); // New scan
+
+    }, onError: (Object e) {
+      print("Some Error " + e.toString());
+    });
+  }
+
+  // flutterBlue.scanResults.listen((List<ScanResult> results) {
+  //   for (ScanResult result in results) {
+  //     if(result.advertisementData.serviceUuids.isNotEmpty) {
+  //       if(result.advertisementData.serviceUuids[0] == testServiceUuid) {
+  //         var N = 2;
+  //         var mpower = -69;
+  //         num distanceCM = pow(10, ((mpower - result.rssi)) / (10 * N)) * 100;
+  //         setState(() {
+  //           distanceCMtoNearestPoint = distanceCM;
+  //         });
+  //         print('Routepoint ${result.device.name} found! rssi: ${result.rssi}. Approx. distance: ${distanceCM} cm');
+  //         break;
+  //       }
+  //     }
+  //   }
+  // });
 
 //   updateSoundLocation() async {
 //     while (true) {
@@ -256,7 +305,9 @@ class RouteScreenState extends State<RouteScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.arrow_downward),
-            label: route['path'][selectedIndex]['name'] + '\n± ' + distanceCMtoNearestPoint.toStringAsFixed(0) + 'cm',
+            label: distanceCMtoNearestPoint == null ?
+            route['path'][selectedIndex]['name']:
+            route['path'][selectedIndex]['name'] + '\n± ' + distanceCMtoNearestPoint.toStringAsFixed(0) + 'cm',
             backgroundColor: Colors.black,
           ),
           const BottomNavigationBarItem(
