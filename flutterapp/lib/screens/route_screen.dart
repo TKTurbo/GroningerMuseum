@@ -75,6 +75,7 @@ class RouteScreenState extends State<RouteScreen> {
   }
 
   doVibrate() async {
+    vibrateEdgeFeedback();
     while (true) {
       await Future.delayed(Duration(milliseconds: getVibrationDelay()), () {
         var soundFrom =
@@ -82,6 +83,24 @@ class RouteScreenState extends State<RouteScreen> {
         soundController.setPosition(1 * cos(soundFrom * (pi / 180)), 0.2,
             1 * sin(soundFrom * (pi / 180))); // TODO: refactor
         Vibrate.feedback(FeedbackType.medium);
+      });
+      if (endloop) {
+        break;
+      }
+    }
+  }
+
+  vibrateEdgeFeedback() async {
+    var previousDelay = null;
+    while (true) {
+      await Future.delayed(Duration(milliseconds: 100), () {
+        var currentDelay = getVibrationDelay();
+        // Vibrate.feedback(FeedbackType.success);
+
+        if(previousDelay != null && previousDelay != currentDelay) {
+          Vibrate.feedback(FeedbackType.warning);
+        }
+        previousDelay = currentDelay;
       });
       if (endloop) {
         break;
