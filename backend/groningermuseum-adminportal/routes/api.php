@@ -32,13 +32,13 @@ Route::get('routes/{id}/get', function($id) {
 
 Route::get('routes/{id}/subroutes/get', function($id) {
 
-    return App\Models\SubRoute::where('route_id', $id)->get();
+    return App\Models\SubRoute::where('route_id', $id)->get('name', 'to_next', 'beacon_uuid');
 
 });
 
 
 Route::get('themes', function() {
-    
+
     return App\Models\Theme::all();
 });
 

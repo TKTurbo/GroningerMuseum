@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('name');
             $table->mediumText('description');
             $table->integer('order_number');
+            $table->integer('to_next');
+            $table->uuid('beacon_uuid');
             $table->timestamps();
         });
     }
