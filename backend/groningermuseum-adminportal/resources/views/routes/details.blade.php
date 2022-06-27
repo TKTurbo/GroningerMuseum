@@ -85,7 +85,7 @@
 
 
                     <hr class="uk-divider-icon">
-                    <a href="#" class="uk-button uk-button-primary">Bestaande subroutes toevoegen</a>
+                    <button class="uk-button uk-button-primary" uk-toggle="target: #all_subroutes" type="button">Bestaande subroutes toevoegen</button>
                     <a class="uk-button uk-button-secondary" href="{{ route('routes.subroutes.create', [$route_id = $selected_route->id]) }}">Nieuwe subroutes aanmaken</a>
 
                     <a class="uk-button uk-button-secondary uk-align-right" href="{{ route('routes.subroutes.order', [$route_id = $selected_route->id]) }}">Nieuwe subroute ordening toepassen</a>
@@ -94,6 +94,40 @@
                     <p>Er zijn nog geen subroutes gevonden... <br> Om een subroute aan te maken klik hieronder op de link. Vul s.v.p. ook alvast de hoeveelheid subroutes in die gemaakt worden.</p>
                     <a class="uk-button uk-button-secondary" href="{{ route('routes.subroutes.create', [$route_id = $selected_route->id]) }}">Klik hier om subroutes aan te maken</a>
                 @endif
+
+
+                <div id="all_subroutes" class="uk-modal-container" uk-modal>
+                    <div class="uk-modal-dialog uk-modal-body">
+                        <h2 class="uk-modal-title"></h2>
+                        @if(isset($all_subroutes))
+
+                            <table class="uk-table uk-table-divider">
+                                <thead>
+                                <tr>
+                                    <th>Selecteren</th>
+                                    <th>Naam</th>
+                                    <th>Beschrijving</th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($all_subroutes as $route)
+                                    <tr>
+                                        <td><input type="checkbox" class="uk-checkbox" id="selected_{{$route->id}}" name="selected_{{$route->name}}" value="{{$route->id}}"></td>
+                                        <td>{{ $route->name }}</td>
+                                        <td>{{ Str::limit($route->description, 75) }}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        @else
+                            <p>Er zijn geen andere subroutes gevonden...</p>
+                        @endif
+                        <a href="#" class="uk-button uk-button-primary">Geselecteerde subroutes toevoegen</a>
+                        <button class="uk-modal-close uk-button uk-button-danger" type="button">Sluit dit venster</button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>

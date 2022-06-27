@@ -27,7 +27,9 @@
                         @if(!empty($subroute->getMedia()[0]))
                             <div class="uk-child-width-1-2@s uk-grid-match">
                                 <img src="{{$subroute->getMedia()[0]->getUrl('thumb')}}" style="width: 250px; height: 500px;" />
+                                <a class="uk-button uk-button-secondary" href="#modal-media-image" uk-toggle>Vergote weergave</a>
                             </div>
+
                         @else
                             <div class="uk-child-width-1-2@s">
                                 <img src="https://www.bibliotheekwerk.nl/wp-content/uploads/2016/06/geen_foto_beschikbaar.jpg"
@@ -36,6 +38,16 @@
                         @endif
 
                     </div>
+                    @if(!empty($subroute->getMedia()[0]))
+                        <div id="modal-media-image" class="uk-flex-top" uk-modal>
+                            <div class="uk-modal-dialog uk-width-auto uk-margin-auto-vertical">
+                                <button class="uk-modal-close-outside" type="button" uk-close></button>
+                                <img src="{{$subroute->getMedia()[0]->getUrl('thumb')}}" width="1000" height="600" alt="">
+                            </div>
+                        </div>
+                    @endif
+
+                </div>
 
             </div>
         </div>

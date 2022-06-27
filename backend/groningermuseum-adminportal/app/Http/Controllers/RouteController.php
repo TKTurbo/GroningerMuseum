@@ -75,20 +75,21 @@ class RouteController extends Controller
     /**
      * Show the details page of a route
      *
-     * @param route_id: The identifier of the route.
-     * @return view
+     * @param $route_id = The identifier of the route.
+     * @return 'routes.details'
      */
     public function showDetails($route_id)
     {
         // Find the selected route and find the subroutes of that route.
         $selected_route = Route::find($route_id);
         $subroutes = SubRoute::where('route_id', $route_id)->orderBy('order_number')->get();
+        $all_subroutes = Subroute::all();
 
         $attr = [
             'header' => $selected_route->name,
         ];
 
-        return view('routes.details', compact('selected_route','subroutes', 'attr'));
+        return view('routes.details', compact('selected_route','subroutes', 'all_subroutes', 'attr'));
     }
 
     /**
