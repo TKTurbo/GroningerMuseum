@@ -38,4 +38,9 @@ class Route extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function subroutes()
+    {
+        return $this->hasMany(SubRoute::class);
+    }
+
 }

@@ -13,10 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('themes', function (Blueprint $table) {
+        Schema::create('sub_routes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('route_id');
             $table->string('name');
             $table->mediumText('description');
+            $table->integer('order_number');
+            $table->integer('to_next');
+            $table->uuid('beacon_uuid');
             $table->timestamps();
         });
     }
@@ -28,6 +32,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('themes');
+        Schema::dropIfExists('subroutes');
     }
 };

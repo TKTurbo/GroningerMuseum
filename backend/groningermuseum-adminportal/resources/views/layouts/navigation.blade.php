@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('routes.main')" :active="request()->routeIs('routes.main')">
+                    <x-nav-link :href="route('routes.main')" :active="request()->routeIs('routes.*')">
                         Routes
                     </x-nav-link>
                 </div>
