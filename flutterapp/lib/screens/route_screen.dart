@@ -23,7 +23,6 @@ class RouteScreenState extends State<RouteScreen> {
   var backupRoute =
       '{"meta":{"route_name":"Mock","version":"1.0"},"path":[{"name":"Kunstwerk","to_next":120, "beaconUuid": "4fafc201-1fb5-459e-8fcc-c5c9c331914b"},{"name":"Gang 1","to_next":20},{"name":"Gang 2","to_next":90},{"name":"Beeld","to_next":0},{"name":"Gang 3","to_next":270},{"name":"Expositie","to_next":null}]}';
   var compass;
-  var previousVibrationDelay;
   bool endloop = false;
   bool couldNotConnect = false;
   var soundController = SoundController();
@@ -45,33 +44,14 @@ class RouteScreenState extends State<RouteScreen> {
     compass = Compass(route['path'][selectedIndex]['to_next']);
     doVibrate();
 
-    // flutterBlue.scanResults.listen((List<ScanResult> results) {
-    //   for (ScanResult result in results) {
-    //     if(result.advertisementData.serviceUuids.isNotEmpty) {
-    //       if(result.advertisementData.serviceUuids[0] == testServiceUuid) {
-    //         var N = 2;
-    //         var mpower = -69;
-    //         num distanceCM = pow(10, ((mpower - result.rssi)) / (10 * N)) * 100;
-    //         setState(() {
-    //           distanceCMtoNearestPoint = distanceCM;
-    //         });
-    //         print('Routepoint ${result.device.name} found! rssi: ${result.rssi}. Approx. distance: ${distanceCM} cm');
-    //         break;
-    //       }
-    //     }
-    //   }
-    // });
-
-    // flutterBlue.startScan();
-    // doScan();
-
     setStream(getScanStream());
   }
 
   @override
   void dispose() {
-    super.dispose();
     endloop = true;
+    super.dispose();
+    dispose();
     soundController.stop();
   }
 
@@ -95,6 +75,7 @@ class RouteScreenState extends State<RouteScreen> {
   }
 
   doVibrate() async {
+    vibrateEdgeFeedback();
     while (true) {
       await Future.delayed(Duration(milliseconds: getVibrationDelay()), () {
         var soundFrom =
@@ -102,6 +83,24 @@ class RouteScreenState extends State<RouteScreen> {
         soundController.setPosition(1 * cos(soundFrom * (pi / 180)), 0.2,
             1 * sin(soundFrom * (pi / 180))); // TODO: refactor
         Vibrate.feedback(FeedbackType.medium);
+      });
+      if (endloop) {
+        break;
+      }
+    }
+  }
+
+  vibrateEdgeFeedback() async {
+    var previousDelay = null;
+    while (true) {
+      await Future.delayed(Duration(milliseconds: 100), () {
+        var currentDelay = getVibrationDelay();
+        // Vibrate.feedback(FeedbackType.success);
+
+        if(previousDelay != null && previousDelay != currentDelay) {
+          Vibrate.feedback(FeedbackType.warning);
+        }
+        previousDelay = currentDelay;
       });
       if (endloop) {
         break;
@@ -171,14 +170,16 @@ class RouteScreenState extends State<RouteScreen> {
 
   void setStream(Stream<ScanResult> stream) async {
     stream.listen((event) {
-          if(event.advertisementData.serviceUuids.isNotEmpty) {
-            if(event.advertisementData.serviceUuids[0] == testServiceUuid) {
+      var currentServiceUuid = route['path'][selectedIndex]['beaconUuid'];
+          if(event.advertisementData.serviceUuids.isNotEmpty && currentServiceUuid != null) {
+            if(event.advertisementData.serviceUuids[0] == currentServiceUuid) {
               var N = 2;
               var mpower = -69;
               num distanceCM = pow(10, ((mpower - event.rssi)) / (10 * N)) * 100;
               setState(() {
                 distanceCMtoNearestPoint = distanceCM;
               });
+              checkIfNear();
               print('Routepoint ${event.device.name} found! rssi: ${event.rssi}. Approx. distance: ${distanceCM} cm');
             }
           }
@@ -189,26 +190,20 @@ class RouteScreenState extends State<RouteScreen> {
       setStream(getScanStream()); // New scan
 
     }, onError: (Object e) {
-      print("Some Error " + e.toString());
+      print('Error while scanning: ' + e.toString());
     });
   }
 
-  // flutterBlue.scanResults.listen((List<ScanResult> results) {
-  //   for (ScanResult result in results) {
-  //     if(result.advertisementData.serviceUuids.isNotEmpty) {
-  //       if(result.advertisementData.serviceUuids[0] == testServiceUuid) {
-  //         var N = 2;
-  //         var mpower = -69;
-  //         num distanceCM = pow(10, ((mpower - result.rssi)) / (10 * N)) * 100;
-  //         setState(() {
-  //           distanceCMtoNearestPoint = distanceCM;
-  //         });
-  //         print('Routepoint ${result.device.name} found! rssi: ${result.rssi}. Approx. distance: ${distanceCM} cm');
-  //         break;
-  //       }
-  //     }
-  //   }
-  // });
+  void checkIfNear() {
+    if(distanceCMtoNearestPoint < 10) {
+      Vibrate.vibrate();
+      setState(() {
+        selectedIndex++;
+        distanceCMtoNearestPoint = null;
+        compass = Compass(route['path'][selectedIndex]['to_next']);
+        });
+    }
+  }
 
 //   updateSoundLocation() async {
 //     while (true) {
@@ -243,7 +238,13 @@ class RouteScreenState extends State<RouteScreen> {
                 routeLength.toString());
           } else if (snapshot.hasError) {
             print(snapshot.error);
-            return Text('Offline: Mock route');
+            var routeLength = route['path'].length - 1;
+            return Text('Offline: ' +
+                route['meta']['route_name'] +
+                ' | Lengte: ' +
+                selectedIndex.toString() +
+                '/' +
+                routeLength.toString());
           } else {
             route = json.decode(backupRoute);
             var routeLength = route['path'].length - 1;
