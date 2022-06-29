@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomeScreen(),
         '/routes': (context) => RoutesScreen(),
-        '/route': (context) => RouteScreen(),
+        '/route': (context) => RouteScreen(ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>),
       },
 
     );
