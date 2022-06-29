@@ -75,9 +75,9 @@ class RouteScreenState extends State<RouteScreen> {
     bool shouldVibrate = true; // TODO: check if can and should vibrate
     compass = Compass(route['path'][selectedIndex]['to_next']);
 
-    // doVibrate();
-    //
-    // setStream(getScanStream());
+    doVibrate();
+
+    setStream(getScanStream());
   }
 
   @override
